@@ -1,0 +1,176 @@
+{
+  "algorithm": "fundamentals.compute_fscore",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "nine of nine",
+      "input": {
+        "roa_current": 0.65,
+        "roa_prior": 0.55,
+        "cfo_current": 97.0,
+        "net_income_current": 73.0,
+        "ltd_ratio_current": 0.07,
+        "ltd_ratio_prior": 0.08,
+        "current_ratio_current": 3.91,
+        "current_ratio_prior": 3.5,
+        "shares_current": 24400.0,
+        "shares_prior": 24500.0,
+        "gross_margin_current": 0.75,
+        "gross_margin_prior": 0.73,
+        "asset_turnover_current": 0.85,
+        "asset_turnover_prior": 0.8
+      },
+      "expected": {
+        "total_score": 9,
+        "max_score": 9,
+        "quality": "STRONG",
+        "signals": [
+          {
+            "name": "ROA positive",
+            "category": "Profitability",
+            "score": 1,
+            "detail": "ROA = 65.00% > 0"
+          },
+          {
+            "name": "CFO positive",
+            "category": "Profitability",
+            "score": 1,
+            "detail": "CFO = $97.0B > 0"
+          },
+          {
+            "name": "ROA improving",
+            "category": "Profitability",
+            "score": 1,
+            "detail": "ROA 65.00% vs prior 55.00%"
+          },
+          {
+            "name": "CFO > Net Income (quality)",
+            "category": "Profitability",
+            "score": 1,
+            "detail": "CFO $97.0B vs NI $73.0B \u2014 accruals low"
+          },
+          {
+            "name": "Debt ratio declining",
+            "category": "Leverage",
+            "score": 1,
+            "detail": "LTD/Assets 0.070 vs prior 0.080"
+          },
+          {
+            "name": "Current ratio improving",
+            "category": "Leverage",
+            "score": 1,
+            "detail": "Current ratio 3.91 vs prior 3.50"
+          },
+          {
+            "name": "No dilution",
+            "category": "Leverage",
+            "score": 1,
+            "detail": "Shares 24400M vs prior 24500M"
+          },
+          {
+            "name": "Gross margin improving",
+            "category": "Efficiency",
+            "score": 1,
+            "detail": "GM 75.0% vs prior 73.0%"
+          },
+          {
+            "name": "Asset turnover improving",
+            "category": "Efficiency",
+            "score": 1,
+            "detail": "AT 0.85 vs prior 0.80"
+          }
+        ],
+        "accruals_ratio": -0.3287671232876712,
+        "profitability_score": 4,
+        "leverage_score": 3,
+        "efficiency_score": 2
+      }
+    },
+    {
+      "name": "zero of nine",
+      "input": {
+        "roa_current": -0.02,
+        "roa_prior": 0.01,
+        "cfo_current": -5.0,
+        "net_income_current": 2.0,
+        "ltd_ratio_current": 0.42,
+        "ltd_ratio_prior": 0.3,
+        "current_ratio_current": 0.9,
+        "current_ratio_prior": 1.4,
+        "shares_current": 5200.0,
+        "shares_prior": 4800.0,
+        "gross_margin_current": 0.21,
+        "gross_margin_prior": 0.29,
+        "asset_turnover_current": 0.4,
+        "asset_turnover_prior": 0.55
+      },
+      "expected": {
+        "total_score": 0,
+        "max_score": 9,
+        "quality": "WEAK",
+        "signals": [
+          {
+            "name": "ROA positive",
+            "category": "Profitability",
+            "score": 0,
+            "detail": "ROA = -2.00% <= 0"
+          },
+          {
+            "name": "CFO positive",
+            "category": "Profitability",
+            "score": 0,
+            "detail": "CFO = $-5.0B <= 0"
+          },
+          {
+            "name": "ROA improving",
+            "category": "Profitability",
+            "score": 0,
+            "detail": "ROA -2.00% vs prior 1.00%"
+          },
+          {
+            "name": "CFO > Net Income (quality)",
+            "category": "Profitability",
+            "score": 0,
+            "detail": "CFO $-5.0B vs NI $2.0B \u2014 accruals high"
+          },
+          {
+            "name": "Debt ratio declining",
+            "category": "Leverage",
+            "score": 0,
+            "detail": "LTD/Assets 0.420 vs prior 0.300"
+          },
+          {
+            "name": "Current ratio improving",
+            "category": "Leverage",
+            "score": 0,
+            "detail": "Current ratio 0.90 vs prior 1.40"
+          },
+          {
+            "name": "No dilution",
+            "category": "Leverage",
+            "score": 0,
+            "detail": "Shares 5200M vs prior 4800M"
+          },
+          {
+            "name": "Gross margin improving",
+            "category": "Efficiency",
+            "score": 0,
+            "detail": "GM 21.0% vs prior 29.0%"
+          },
+          {
+            "name": "Asset turnover improving",
+            "category": "Efficiency",
+            "score": 0,
+            "detail": "AT 0.40 vs prior 0.55"
+          }
+        ],
+        "accruals_ratio": 3.5,
+        "profitability_score": 0,
+        "leverage_score": 0,
+        "efficiency_score": 0
+      }
+    }
+  ]
+}

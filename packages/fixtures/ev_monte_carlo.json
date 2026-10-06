@@ -1,0 +1,63 @@
+{
+  "algorithm": "ev.monte_carlo",
+  "agreement": "statistical",
+  "tolerance": 0.005,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "NVDA-shaped matrix, 200k paths",
+      "input": {
+        "current_mcap": 4400.0,
+        "revenue_scenarios": [
+          365.0,
+          300.0,
+          240.0,
+          180.0
+        ],
+        "revenue_probs": [
+          0.2,
+          0.4,
+          0.25,
+          0.15
+        ],
+        "revenue_stds": [
+          40.0,
+          30.0,
+          25.0,
+          30.0
+        ],
+        "multiple_scenarios": [
+          30.0,
+          22.0,
+          15.0
+        ],
+        "multiple_probs": [
+          0.2,
+          0.5,
+          0.3
+        ],
+        "net_margin": 0.65,
+        "n_simulations": 200000,
+        "seed": 42
+      },
+      "expected": {
+        "ev_mean": -0.11025833806879946,
+        "ev_median": -0.15206883795651374,
+        "ev_std": 0.3209940106943981,
+        "p_positive": 0.32947,
+        "p_negative": 0.67053,
+        "percentiles": {
+          "p5": -0.5573299729928123,
+          "p10": -0.48697738237641525,
+          "p25": -0.3497649747666962,
+          "p50": -0.15206883795651374,
+          "p75": 0.08396786717357838,
+          "p90": 0.3265694368259384,
+          "p95": 0.4835244887195208
+        },
+        "kelly_fraction": -0.42612325897983677
+      }
+    }
+  ],
+  "note": "NumPy's PCG64 stream cannot be reproduced in TypeScript, so the port is held to distributional agreement within tolerance, not bit equality. Python asserts these values exactly as a regression guard."
+}

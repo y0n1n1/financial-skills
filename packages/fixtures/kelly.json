@@ -1,0 +1,99 @@
+{
+  "algorithm": "kelly.evaluate",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "strong edge passes",
+      "input": {
+        "probability": 0.632,
+        "upside": 0.523,
+        "downside": 0.25
+      },
+      "expected": {
+        "probability": 0.632,
+        "win_loss_ratio": 2.092,
+        "fraction": 0.4560917782026768,
+        "half": 0.2280458891013384,
+        "quarter": 0.1140229445506692,
+        "gate": "PASS",
+        "reason": "Positive expected value (f*=0.456).",
+        "passes": true
+      }
+    },
+    {
+      "name": "thin edge is marginal",
+      "input": {
+        "probability": 0.511,
+        "upside": 0.165,
+        "downside": 0.3
+      },
+      "expected": {
+        "probability": 0.511,
+        "win_loss_ratio": 0.55,
+        "fraction": -0.378090909090909,
+        "half": -0.1890454545454545,
+        "quarter": -0.09452272727272724,
+        "gate": "EXCLUDED",
+        "reason": "Negative expected value at p=51.1% and b=0.55. Excluded \u2014 no override.",
+        "passes": false
+      }
+    },
+    {
+      "name": "negative edge is excluded",
+      "input": {
+        "probability": 0.4,
+        "upside": 0.2,
+        "downside": 0.3
+      },
+      "expected": {
+        "probability": 0.4,
+        "win_loss_ratio": 0.6666666666666667,
+        "fraction": -0.49999999999999983,
+        "half": -0.24999999999999992,
+        "quarter": -0.12499999999999996,
+        "gate": "EXCLUDED",
+        "reason": "Negative expected value at p=40.0% and b=0.67. Excluded \u2014 no override.",
+        "passes": false
+      }
+    },
+    {
+      "name": "coinflip at even odds is excluded",
+      "input": {
+        "probability": 0.5,
+        "upside": 0.3,
+        "downside": 0.3
+      },
+      "expected": {
+        "probability": 0.5,
+        "win_loss_ratio": 1.0,
+        "fraction": 0.0,
+        "half": 0.0,
+        "quarter": 0.0,
+        "gate": "EXCLUDED",
+        "reason": "Negative expected value at p=50.0% and b=1.00. Excluded \u2014 no override.",
+        "passes": false
+      }
+    },
+    {
+      "name": "riskless bet is rejected",
+      "input": {
+        "probability": 0.8,
+        "upside": 0.5,
+        "downside": 0.0
+      },
+      "expected": {
+        "probability": 0.8,
+        "win_loss_ratio": Infinity,
+        "fraction": 0.0,
+        "half": 0.0,
+        "quarter": 0.0,
+        "gate": "EXCLUDED",
+        "reason": "Downside must be a positive magnitude; a riskless bet is not modelled.",
+        "passes": false
+      }
+    }
+  ],
+  "note": "Kelly is an entry gate here, not a sizer: a negative fraction excludes the position with no override."
+}

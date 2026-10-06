@@ -1,0 +1,114 @@
+{
+  "algorithm": "prereg.compare",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "bullish lean, confirming drift flagged",
+      "input": {
+        "expected_posterior": 0.4,
+        "actual_posterior": 0.55,
+        "expected_direction": "slightly bullish"
+      },
+      "expected": {
+        "expected_posterior": 0.4,
+        "actual_posterior": 0.55,
+        "divergence": 0.15000000000000002,
+        "motivated_reasoning_flag": true,
+        "reason": "Actual posterior (55%) is +15% more bullish than pre-registered expectation (40%). Possible confirmation bias toward bull thesis."
+      }
+    },
+    {
+      "name": "bullish lean, drift against is clean",
+      "input": {
+        "expected_posterior": 0.4,
+        "actual_posterior": 0.25,
+        "expected_direction": "slightly bullish"
+      },
+      "expected": {
+        "expected_posterior": 0.4,
+        "actual_posterior": 0.25,
+        "divergence": -0.15000000000000002,
+        "motivated_reasoning_flag": false,
+        "reason": "No motivated reasoning detected. Actual within expected range."
+      }
+    },
+    {
+      "name": "bearish lean, confirming drift flagged",
+      "input": {
+        "expected_posterior": 0.35,
+        "actual_posterior": 0.22,
+        "expected_direction": "slightly bearish"
+      },
+      "expected": {
+        "expected_posterior": 0.35,
+        "actual_posterior": 0.22,
+        "divergence": -0.12999999999999998,
+        "motivated_reasoning_flag": true,
+        "reason": "Actual posterior (22%) is 13% more bearish than pre-registered expectation (35%). Possible confirmation bias toward bear thesis."
+      }
+    },
+    {
+      "name": "bearish lean, drift against is clean",
+      "input": {
+        "expected_posterior": 0.35,
+        "actual_posterior": 0.5,
+        "expected_direction": "bearish"
+      },
+      "expected": {
+        "expected_posterior": 0.35,
+        "actual_posterior": 0.5,
+        "divergence": 0.15000000000000002,
+        "motivated_reasoning_flag": false,
+        "reason": "No motivated reasoning detected. Actual within expected range."
+      }
+    },
+    {
+      "name": "neutral, large drift flagged",
+      "input": {
+        "expected_posterior": 0.48,
+        "actual_posterior": 0.7,
+        "expected_direction": "neutral"
+      },
+      "expected": {
+        "expected_posterior": 0.48,
+        "actual_posterior": 0.7,
+        "divergence": 0.21999999999999997,
+        "motivated_reasoning_flag": true,
+        "reason": "Actual posterior (70%) diverged +22% from expectation (48%). Large unexplained divergence."
+      }
+    },
+    {
+      "name": "neutral, small drift clean",
+      "input": {
+        "expected_posterior": 0.48,
+        "actual_posterior": 0.55,
+        "expected_direction": "neutral"
+      },
+      "expected": {
+        "expected_posterior": 0.48,
+        "actual_posterior": 0.55,
+        "divergence": 0.07000000000000006,
+        "motivated_reasoning_flag": false,
+        "reason": "No motivated reasoning detected. Actual within expected range."
+      }
+    },
+    {
+      "name": "exactly at the threshold is clean",
+      "input": {
+        "expected_posterior": 0.4,
+        "actual_posterior": 0.5,
+        "expected_direction": "bullish"
+      },
+      "expected": {
+        "expected_posterior": 0.4,
+        "actual_posterior": 0.5,
+        "divergence": 0.09999999999999998,
+        "motivated_reasoning_flag": false,
+        "reason": "No motivated reasoning detected. Actual within expected range."
+      }
+    }
+  ],
+  "note": "Thresholds are asymmetric by design: drift confirming a declared lean is flagged sooner than drift in any other direction."
+}

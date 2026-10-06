@@ -1,0 +1,193 @@
+{
+  "algorithm": "calibration.score_calibration",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "overconfident forecaster",
+      "input": {
+        "forecasts": [
+          {
+            "probability": 0.35,
+            "outcome": 0
+          },
+          {
+            "probability": 0.75,
+            "outcome": 1
+          },
+          {
+            "probability": 0.8,
+            "outcome": 0
+          },
+          {
+            "probability": 0.55,
+            "outcome": 1
+          },
+          {
+            "probability": 0.9,
+            "outcome": 0
+          },
+          {
+            "probability": 0.85,
+            "outcome": 0
+          }
+        ]
+      },
+      "expected": {
+        "n_resolved": 6,
+        "mean_brier": 0.4266666666666667,
+        "verdict": "POOR",
+        "sufficient_data": true,
+        "overconfident": true,
+        "buckets": [
+          {
+            "low": 0.2,
+            "high": 0.4,
+            "count": 1,
+            "avg_forecast": 0.35,
+            "actual_rate": 0.0,
+            "gap": -0.35,
+            "calibrated": false
+          },
+          {
+            "low": 0.4,
+            "high": 0.6,
+            "count": 1,
+            "avg_forecast": 0.55,
+            "actual_rate": 1.0,
+            "gap": 0.44999999999999996,
+            "calibrated": false
+          },
+          {
+            "low": 0.6,
+            "high": 0.8,
+            "count": 1,
+            "avg_forecast": 0.75,
+            "actual_rate": 1.0,
+            "gap": 0.25,
+            "calibrated": false
+          },
+          {
+            "low": 0.8,
+            "high": 1.01,
+            "count": 3,
+            "avg_forecast": 0.8500000000000001,
+            "actual_rate": 0.0,
+            "gap": -0.8500000000000001,
+            "calibrated": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "well calibrated",
+      "input": {
+        "forecasts": [
+          {
+            "probability": 0.1,
+            "outcome": 0
+          },
+          {
+            "probability": 0.1,
+            "outcome": 0
+          },
+          {
+            "probability": 0.5,
+            "outcome": 1
+          },
+          {
+            "probability": 0.5,
+            "outcome": 0
+          },
+          {
+            "probability": 0.9,
+            "outcome": 1
+          },
+          {
+            "probability": 0.9,
+            "outcome": 1
+          }
+        ]
+      },
+      "expected": {
+        "n_resolved": 6,
+        "mean_brier": 0.09000000000000001,
+        "verdict": "GOOD",
+        "sufficient_data": true,
+        "overconfident": false,
+        "buckets": [
+          {
+            "low": 0.0,
+            "high": 0.2,
+            "count": 2,
+            "avg_forecast": 0.1,
+            "actual_rate": 0.0,
+            "gap": -0.1,
+            "calibrated": false
+          },
+          {
+            "low": 0.4,
+            "high": 0.6,
+            "count": 2,
+            "avg_forecast": 0.5,
+            "actual_rate": 0.5,
+            "gap": 0.0,
+            "calibrated": true
+          },
+          {
+            "low": 0.8,
+            "high": 1.01,
+            "count": 2,
+            "avg_forecast": 0.9,
+            "actual_rate": 1.0,
+            "gap": 0.09999999999999998,
+            "calibrated": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "below the stats threshold",
+      "input": {
+        "forecasts": [
+          {
+            "probability": 0.4,
+            "outcome": 1
+          },
+          {
+            "probability": 0.6,
+            "outcome": 0
+          }
+        ]
+      },
+      "expected": {
+        "n_resolved": 2,
+        "mean_brier": 0.36,
+        "verdict": "POOR",
+        "sufficient_data": false,
+        "overconfident": false,
+        "buckets": [
+          {
+            "low": 0.4,
+            "high": 0.6,
+            "count": 1,
+            "avg_forecast": 0.4,
+            "actual_rate": 1.0,
+            "gap": 0.6,
+            "calibrated": false
+          },
+          {
+            "low": 0.6,
+            "high": 0.8,
+            "count": 1,
+            "avg_forecast": 0.6,
+            "actual_rate": 0.0,
+            "gap": -0.6,
+            "calibrated": false
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "algorithm": "options.scenario_probabilities",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "one year, four boundaries",
+      "input": {
+        "spot": 178.0,
+        "iv": 0.39,
+        "rf": 0.045,
+        "expiry_years": 1.0,
+        "scenario_boundaries": [
+          130.0,
+          155.0,
+          250.0,
+          360.0
+        ],
+        "scenario_labels": [
+          "worst",
+          "bear",
+          "base_top",
+          "bull_top"
+        ]
+      },
+      "expected": {
+        "scenarios": [
+          {
+            "label": "worst",
+            "range": "$0 - $130",
+            "probability": 0.23387293858880126,
+            "return": -0.6348314606741573
+          },
+          {
+            "label": "bear",
+            "range": "$130 - $155",
+            "probability": 0.15772762653929173,
+            "return": -0.199438202247191
+          },
+          {
+            "label": "base_top",
+            "range": "$155 - $250",
+            "probability": 0.4374913823933872,
+            "return": 0.13764044943820225
+          },
+          {
+            "label": "bull_top",
+            "range": "$250 - $360",
+            "probability": 0.1412312763664081,
+            "return": 0.7134831460674157
+          },
+          {
+            "label": "Above $360",
+            "range": "$360+",
+            "probability": 0.029676776112111725,
+            "return": 1.6292134831460674
+          }
+        ],
+        "ev": 0.029405636162948404,
+        "probability_sum": 1.0
+      }
+    },
+    {
+      "name": "six months, unlabelled",
+      "input": {
+        "spot": 100.0,
+        "iv": 0.25,
+        "rf": 0.03,
+        "expiry_years": 0.5,
+        "scenario_boundaries": [
+          80.0,
+          120.0
+        ],
+        "scenario_labels": []
+      },
+      "expected": {
+        "scenarios": [
+          {
+            "label": "Below $80",
+            "range": "$0 - $80",
+            "probability": 0.1040594171139364,
+            "return": -0.6
+          },
+          {
+            "label": "$80-$120",
+            "range": "$80 - $120",
+            "probability": 0.7455832443080371,
+            "return": 0.0
+          },
+          {
+            "label": "Above $120",
+            "range": "$120+",
+            "probability": 0.15035733857802647,
+            "return": 0.56
+          }
+        ],
+        "ev": 0.021764459335332983,
+        "probability_sum": 1.0
+      }
+    },
+    {
+      "name": "high vol, single boundary",
+      "input": {
+        "spot": 50.0,
+        "iv": 0.8,
+        "rf": 0.05,
+        "expiry_years": 2.0,
+        "scenario_boundaries": [
+          75.0
+        ],
+        "scenario_labels": []
+      },
+      "expected": {
+        "scenarios": [
+          {
+            "label": "Below $75",
+            "range": "$0 - $75",
+            "probability": 0.7983328028040205,
+            "return": -0.25
+          },
+          {
+            "label": "Above $75",
+            "range": "$75+",
+            "probability": 0.20166719719597948,
+            "return": 0.95
+          }
+        ],
+        "ev": -0.007999363364824652,
+        "probability_sum": 1.0
+      }
+    }
+  ],
+  "note": "Probabilities partition the real line, so they must sum to 1."
+}

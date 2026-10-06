@@ -1,0 +1,183 @@
+{
+  "algorithm": "portfolio.black_litterman",
+  "agreement": "exact",
+  "tolerance": 1e-09,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "bearish views",
+      "input": {
+        "tickers": [
+          "NVDA",
+          "GOOGL",
+          "META"
+        ],
+        "market_caps": [
+          4400000000000.0,
+          2100000000000.0,
+          1300000000000.0
+        ],
+        "views": [
+          -3.9,
+          -8.3,
+          0.0
+        ],
+        "confidences": [
+          55.0,
+          35.0,
+          20.0
+        ],
+        "sigma": [
+          [
+            0.16,
+            0.072,
+            0.064
+          ],
+          [
+            0.072,
+            0.09,
+            0.054
+          ],
+          [
+            0.064,
+            0.054,
+            0.1225
+          ]
+        ],
+        "risk_aversion": 2.5,
+        "tau": 0.05
+      },
+      "expected": {
+        "tickers": [
+          "NVDA",
+          "GOOGL",
+          "META"
+        ],
+        "market_weights": {
+          "NVDA": 0.5641,
+          "GOOGL": 0.2692,
+          "META": 0.1667
+        },
+        "equilibrium_returns": {
+          "NVDA": 30.08,
+          "GOOGL": 18.46,
+          "META": 17.76
+        },
+        "bl_returns": {
+          "NVDA": 3.49,
+          "GOOGL": -1.11,
+          "META": 2.03
+        },
+        "bl_weights": {
+          "NVDA": 0.6468,
+          "GOOGL": 0.0,
+          "META": 0.3532
+        },
+        "risk_contribution": {
+          "NVDA": 73.2,
+          "GOOGL": 0.0,
+          "META": 26.8
+        },
+        "portfolio_vol": 33.4,
+        "views_used": {
+          "NVDA": -3.9,
+          "GOOGL": -8.3,
+          "META": 0.0
+        },
+        "confidences_used": {
+          "NVDA": 55.0,
+          "GOOGL": 35.0,
+          "META": 20.0
+        }
+      }
+    },
+    {
+      "name": "bullish views",
+      "input": {
+        "tickers": [
+          "NVDA",
+          "GOOGL",
+          "META"
+        ],
+        "market_caps": [
+          4400000000000.0,
+          2100000000000.0,
+          1300000000000.0
+        ],
+        "views": [
+          18.0,
+          12.0,
+          25.0
+        ],
+        "confidences": [
+          80.0,
+          60.0,
+          90.0
+        ],
+        "sigma": [
+          [
+            0.16,
+            0.072,
+            0.064
+          ],
+          [
+            0.072,
+            0.09,
+            0.054
+          ],
+          [
+            0.064,
+            0.054,
+            0.1225
+          ]
+        ],
+        "risk_aversion": 2.5,
+        "tau": 0.05
+      },
+      "expected": {
+        "tickers": [
+          "NVDA",
+          "GOOGL",
+          "META"
+        ],
+        "market_weights": {
+          "NVDA": 0.5641,
+          "GOOGL": 0.2692,
+          "META": 0.1667
+        },
+        "equilibrium_returns": {
+          "NVDA": 30.08,
+          "GOOGL": 18.46,
+          "META": 17.76
+        },
+        "bl_returns": {
+          "NVDA": 20.58,
+          "GOOGL": 13.94,
+          "META": 23.61
+        },
+        "bl_weights": {
+          "NVDA": 0.2641,
+          "GOOGL": 0.0584,
+          "META": 0.6775
+        },
+        "risk_contribution": {
+          "NVDA": 24.4,
+          "GOOGL": 3.7,
+          "META": 71.9
+        },
+        "portfolio_vol": 31.2,
+        "views_used": {
+          "NVDA": 18.0,
+          "GOOGL": 12.0,
+          "META": 25.0
+        },
+        "confidences_used": {
+          "NVDA": 80.0,
+          "GOOGL": 60.0,
+          "META": 90.0
+        }
+      }
+    }
+  ],
+  "note": "Requires an n-by-n matrix inverse; the TypeScript port implements Gauss-Jordan elimination with partial pivoting."
+}

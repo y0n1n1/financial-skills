@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Runtime state written by tools/ — personal, never committed
+calibration_log.json
+pre_registrations.json
+lifecycle.json
+data-library/
+mosaic-updates/
+post-mortems/
+parameters/*.yaml
+
+# OS
+.DS_Store

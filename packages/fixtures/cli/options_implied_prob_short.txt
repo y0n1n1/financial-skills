@@ -1,0 +1,20 @@
+
+============================================================
+  OPTIONS-IMPLIED PROBABILITIES — TEST
+  Spot: $100.00 | IV: 25.0% | 12-month horizon
+============================================================
+
+  Scenario             Range                  Prob     Return
+  -------------------- ------------------ -------- ----------
+  Below $80            $0 - $80             10.4% [91m   -60.0%[0m
+  $80-$120             $80 - $120           74.6% [91m    +0.0%[0m
+  Above $120           $120+                15.0% [92m   +56.0%[0m
+
+  Market-implied EV: +2.2%
+  P(positive return): 15.0%
+  P(negative return): 10.4%
+
+  USE: Compare these probabilities against your model's scenario weights.
+  If your model says Bull=35% but options say Bull=12%, you're claiming
+  to know something the market doesn't. Articulate what or adjust.
+

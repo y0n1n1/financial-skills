@@ -1,0 +1,30 @@
+
+============================================================
+  MONTE CARLO EV — NVDA
+  100,000 simulations
+============================================================
+
+  EV (mean):    [91m-11.1%[0m
+  EV (median):  -15.5%
+  Std dev:      32.2%
+
+  Distribution:
+    5th pctl:   -55.9%
+    25th pctl:  -35.1%
+    50th pctl:  -15.5%
+    75th pctl:  +8.3%
+    95th pctl:  +48.6%
+
+  P(positive):  32.9%
+  P(negative):  67.1%
+  Avg win:      +26.0%
+  Avg loss:     29.3%
+  Win/loss:     0.89:1
+
+  Kelly:        [91m-42.64%[0m
+  Quarter Kelly:[91m-10.66%[0m
+
+  [91mNEGATIVE KELLY — trade has negative expected value[0m
+
+============================================================
+

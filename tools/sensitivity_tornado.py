@@ -8,162 +8,21 @@ Usage:
 Output: Ranked list of inputs by EV impact when perturbed
 """
 
-import numpy as np
-import json
 import argparse
+import json
+from dataclasses import asdict
+
+from _tfg_path import ensure_tfg_core_importable
+
+ensure_tfg_core_importable()
+
+from tfg_core.ev import deterministic_ev as compute_ev
+from tfg_core.sensitivity import run_sensitivity as _run_sensitivity
 
 
-def compute_ev(
-    current_mcap: float,
-    revenue_scenarios: list[float],
-    revenue_probs: list[float],
-    multiple_scenarios: list[float],
-    multiple_probs: list[float],
-    margin: float,
-) -> float:
-    """Compute deterministic EV from the matrix."""
-    ev = 0
-    for i, (rev, rp) in enumerate(zip(revenue_scenarios, revenue_probs)):
-        for j, (mult, mp) in enumerate(zip(multiple_scenarios, multiple_probs)):
-            implied_mcap = rev * margin * mult
-            ret = (implied_mcap - current_mcap) / current_mcap
-            ev += rp * mp * ret
-    return ev
-
-
-def run_sensitivity(
-    current_mcap: float,
-    revenue_scenarios: list[float],
-    revenue_probs: list[float],
-    revenue_stds: list[float],
-    multiple_scenarios: list[float],
-    multiple_probs: list[float],
-    margin: float,
-) -> list[dict]:
-    """
-    Perturb each input by ±1 std dev and measure EV impact.
-    Returns sorted list of sensitivities.
-    """
-    base_ev = compute_ev(current_mcap, revenue_scenarios, revenue_probs,
-                          multiple_scenarios, multiple_probs, margin)
-
-    sensitivities = []
-
-    # Perturb each revenue scenario
-    for i, (rev, std) in enumerate(zip(revenue_scenarios, revenue_stds)):
-        # High perturbation
-        rev_high = revenue_scenarios.copy()
-        rev_high[i] = rev + std
-        ev_high = compute_ev(current_mcap, rev_high, revenue_probs,
-                              multiple_scenarios, multiple_probs, margin)
-
-        # Low perturbation
-        rev_low = revenue_scenarios.copy()
-        rev_low[i] = rev - std
-        ev_low = compute_ev(current_mcap, rev_low, revenue_probs,
-                             multiple_scenarios, multiple_probs, margin)
-
-        sensitivities.append({
-            "parameter": f"Revenue scenario {i+1} (${rev}B ± ${std}B)",
-            "ev_low": ev_low,
-            "ev_high": ev_high,
-            "ev_swing": ev_high - ev_low,
-            "base_ev": base_ev,
-        })
-
-    # Perturb each multiple probability by ±10pp (redistributed)
-    for i in range(len(multiple_probs)):
-        shift = 0.10
-        labels = ["Bull", "Current", "Bear", "Crash", "Extra1", "Extra2"][: len(multiple_probs)]
-
-        # Shift 10pp TO this multiple from others
-        probs_high = multiple_probs.copy()
-        probs_high[i] = min(probs_high[i] + shift, 0.95)
-        # Redistribute the shift proportionally from others
-        remaining = 1.0 - probs_high[i]
-        other_sum = sum(probs_high[j] for j in range(len(probs_high)) if j != i)
-        if other_sum > 0:
-            for j in range(len(probs_high)):
-                if j != i:
-                    probs_high[j] = probs_high[j] * remaining / other_sum
-
-        ev_high = compute_ev(current_mcap, revenue_scenarios, revenue_probs,
-                              multiple_scenarios, probs_high, margin)
-
-        # Shift 10pp AWAY from this multiple
-        probs_low = multiple_probs.copy()
-        probs_low[i] = max(probs_low[i] - shift, 0.05)
-        remaining = 1.0 - probs_low[i]
-        other_sum = sum(probs_low[j] for j in range(len(probs_low)) if j != i)
-        if other_sum > 0:
-            for j in range(len(probs_low)):
-                if j != i:
-                    probs_low[j] = probs_low[j] * remaining / other_sum
-
-        ev_low = compute_ev(current_mcap, revenue_scenarios, revenue_probs,
-                             multiple_scenarios, probs_low, margin)
-
-        sensitivities.append({
-            "parameter": f"{labels[i]} multiple prob ({multiple_probs[i]:.0%} ± 10pp)",
-            "ev_low": ev_low,
-            "ev_high": ev_high,
-            "ev_swing": abs(ev_high - ev_low),
-            "base_ev": base_ev,
-        })
-
-    # Perturb each revenue probability by ±10pp
-    rev_labels = [f"${r}B" for r in revenue_scenarios]
-    for i in range(len(revenue_probs)):
-        shift = 0.10
-
-        probs_high = revenue_probs.copy()
-        probs_high[i] = min(probs_high[i] + shift, 0.95)
-        remaining = 1.0 - probs_high[i]
-        other_sum = sum(probs_high[j] for j in range(len(probs_high)) if j != i)
-        if other_sum > 0:
-            for j in range(len(probs_high)):
-                if j != i:
-                    probs_high[j] = probs_high[j] * remaining / other_sum
-
-        ev_high = compute_ev(current_mcap, revenue_scenarios, probs_high,
-                              multiple_scenarios, multiple_probs, margin)
-
-        probs_low = revenue_probs.copy()
-        probs_low[i] = max(probs_low[i] - shift, 0.05)
-        remaining = 1.0 - probs_low[i]
-        other_sum = sum(probs_low[j] for j in range(len(probs_low)) if j != i)
-        if other_sum > 0:
-            for j in range(len(probs_low)):
-                if j != i:
-                    probs_low[j] = probs_low[j] * remaining / other_sum
-
-        ev_low = compute_ev(current_mcap, revenue_scenarios, probs_low,
-                             multiple_scenarios, multiple_probs, margin)
-
-        sensitivities.append({
-            "parameter": f"Revenue {rev_labels[i]} prob ({revenue_probs[i]:.0%} ± 10pp)",
-            "ev_low": ev_low,
-            "ev_high": ev_high,
-            "ev_swing": abs(ev_high - ev_low),
-            "base_ev": base_ev,
-        })
-
-    # Perturb margin
-    ev_high_m = compute_ev(current_mcap, revenue_scenarios, revenue_probs,
-                            multiple_scenarios, multiple_probs, margin + 0.05)
-    ev_low_m = compute_ev(current_mcap, revenue_scenarios, revenue_probs,
-                           multiple_scenarios, multiple_probs, margin - 0.05)
-    sensitivities.append({
-        "parameter": f"Net margin ({margin:.0%} ± 5pp)",
-        "ev_low": ev_low_m,
-        "ev_high": ev_high_m,
-        "ev_swing": abs(ev_high_m - ev_low_m),
-        "base_ev": base_ev,
-    })
-
-    # Sort by swing magnitude
-    sensitivities.sort(key=lambda x: x["ev_swing"], reverse=True)
-    return sensitivities
+def run_sensitivity(**kwargs) -> list[dict]:
+    """Backwards-compatible wrapper: returns the legacy list-of-dicts shape."""
+    return [asdict(item) for item in _run_sensitivity(**kwargs)]
 
 
 def print_tornado(sensitivities: list[dict], ticker: str):

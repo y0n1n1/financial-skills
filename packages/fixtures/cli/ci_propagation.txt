@@ -1,0 +1,23 @@
+
+=================================================================
+  CI PROPAGATION — NVDA
+  Prior: 40.0% +/- 8.0%
+  Bias corrections: ON (overconfidence 1.5x, inside-view 0.6x)
+=================================================================
+
+  Step Label                               Dir             Q     LR     Post      ±
+  ---- ----------------------------------- ------------ ---- ------ -------- ------
+  1    STRONG_FOR                          STRONG_FOR    0.9   1.22   44.8%  8.4%
+  2    STRONG_AGAINST                      STRONG_AGAINST  0.8   0.80   39.2%  8.4%
+  3    MODERATE_FOR                        MODERATE_FOR  0.7   1.06   40.7%  8.6%
+  4    MODERATE_AGAINST                    MODERATE_AGAINST  0.8   0.93   39.0%  8.5%
+  5    MODERATE_AGAINST                    MODERATE_AGAINST  0.7   0.94   37.5%  8.5%
+
+  =================================================================
+  FINAL POSTERIOR: 37.5% +/- 12.7%
+  68% CI: [24.8%, 50.2%]
+  95% CI: [12.1%, 62.9%]
+
+  NOTE: 95% CI CROSSES 50% — uncertainty is too high to call direction
+=================================================================
+

@@ -1,0 +1,24 @@
+
+=======================================================
+  PIOTROSKI F-SCORE — WEAK
+=======================================================
+
+  Score: [91m0/9 (WEAK)[0m
+
+  Profitability: 0/4
+  Leverage:      0/3
+  Efficiency:    0/2
+  Accruals:      +3.50 (elevated — watch)
+
+  [91m-[0m ROA positive                   ROA = -2.00% <= 0
+  [91m-[0m CFO positive                   CFO = $-5.0B <= 0
+  [91m-[0m ROA improving                  ROA -2.00% vs prior 1.00%
+  [91m-[0m CFO > Net Income (quality)     CFO $-5.0B vs NI $2.0B — accruals high
+  [91m-[0m Debt ratio declining           LTD/Assets 0.420 vs prior 0.300
+  [91m-[0m Current ratio improving        Current ratio 0.90 vs prior 1.40
+  [91m-[0m No dilution                    Shares 5200M vs prior 4800M
+  [91m-[0m Gross margin improving         GM 21.0% vs prior 29.0%
+  [91m-[0m Asset turnover improving       AT 0.40 vs prior 0.55
+
+=======================================================
+

@@ -1,0 +1,22 @@
+
+============================================================
+  OPTIONS-IMPLIED PROBABILITIES — NVDA
+  Spot: $178.00 | IV: 39.0% | 12-month horizon
+============================================================
+
+  Scenario             Range                  Prob     Return
+  -------------------- ------------------ -------- ----------
+  worst                $0 - $130            23.4% [91m   -63.5%[0m
+  bear                 $130 - $155          15.8% [91m   -19.9%[0m
+  base_top             $155 - $250          43.7% [92m   +13.8%[0m
+  bull_top             $250 - $360          14.1% [92m   +71.3%[0m
+  Above $360           $360+                 3.0% [92m  +162.9%[0m
+
+  Market-implied EV: +2.9%
+  P(positive return): 60.8%
+  P(negative return): 39.2%
+
+  USE: Compare these probabilities against your model's scenario weights.
+  If your model says Bull=35% but options say Bull=12%, you're claiming
+  to know something the market doesn't. Articulate what or adjust.
+
