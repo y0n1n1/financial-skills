@@ -87,15 +87,15 @@
 }
 
 /*
- * On a viewport too short to hold the whole index, a pinned sidebar has to
- * become its own scroll container — and a nested scroller silently eats part of
- * any wheel gesture that starts over it, so the page appears to stick partway
- * down. Below that height the sidebar simply scrolls with the document instead.
- * Scoped to wide screens: the narrow-screen drawer below is fixed-position and
- * does need its own scrolling.
+ * When the index does not fit, it scrolls with the document instead of being
+ * pinned. Whether it fits is measured at runtime in Sidebar.tsx and published as
+ * data-pinned — a CSS height breakpoint cannot know how tall the text renders on
+ * a given machine, and guessing it wrong hides entries behind an invisible
+ * overlay scrollbar. Scoped to wide screens: the narrow-screen drawer below is
+ * fixed-position and does need its own scrolling.
  */
-@media (min-width: 881px) and (max-height: 940px) {
-  .sidebar {
+@media (min-width: 881px) {
+  .sidebar[data-pinned='false'] {
     position: static;
     max-height: none;
     overflow-y: visible;

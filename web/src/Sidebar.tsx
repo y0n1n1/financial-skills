@@ -5,7 +5,47 @@
  * shape before any plate is opened.
  */
 
+import { useEffect, useRef, useState } from 'react';
+
 import { ENTRIES, GROUP_ORDER, Kind, entriesIn } from './lib/registry';
+
+/**
+ * Whether the index fits the viewport, measured rather than assumed.
+ *
+ * A pinned sidebar has to clip anything taller than the screen, and on macOS the
+ * resulting scrollbar is invisible until you scroll it — so entries near the
+ * bottom silently vanish. How tall the index renders depends on the system font,
+ * the browser and the zoom level, which no CSS breakpoint can predict. So it is
+ * measured at runtime: pin only when the whole index genuinely fits, and
+ * otherwise let it scroll with the document, where nothing can hide.
+ */
+function useFitsViewport(ref: React.RefObject<HTMLElement>): boolean {
+  const [fits, setFits] = useState(true);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    // Measure the inner content, never the nav's own box. As a flex child the
+    // nav stretches to the full page height once it is no longer pinned, so
+    // measuring the box would read thousands of pixels and latch the state off.
+    const measure = () => setFits(element.offsetHeight <= window.innerHeight);
+    measure();
+
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    window.addEventListener('resize', measure);
+    // Fonts load after first paint and change the measurement.
+    document.fonts?.ready.then(measure).catch(() => {});
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [ref]);
+
+  return fits;
+}
 
 export function Sidebar({
   current,
@@ -16,10 +56,19 @@ export function Sidebar({
   readonly open: boolean;
   readonly onClose: () => void;
 }) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const fits = useFitsViewport(contentRef);
+
   return (
     <>
       <div className="scrim" data-open={open} onClick={onClose} aria-hidden />
-      <nav className="sidebar" data-open={open} aria-label="Algorithm index">
+      <nav
+        className="sidebar"
+        data-open={open}
+        data-pinned={fits}
+        aria-label="Algorithm index"
+      >
+        <div ref={contentRef}>
         <a
           href="#/"
           style={{
@@ -76,6 +125,7 @@ export function Sidebar({
           <a href="https://github.com/y0n1n1/financial-skills">Source on GitHub</a>
           <br />
           Not financial advice.
+        </div>
         </div>
       </nav>
     </>
