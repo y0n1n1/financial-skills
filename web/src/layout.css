@@ -1,0 +1,105 @@
+/*
+ * Layout rules that need media queries or pseudo-selectors, which inline styles
+ * cannot express. Everything else is colocated with its component.
+ */
+
+.sidebar {
+  width: 268px;
+  flex-shrink: 0;
+  border-right: var(--rule);
+  background: var(--surface-1);
+  padding: 26px 0 40px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar-link {
+  display: block;
+  padding: 5px 24px 5px 22px;
+  border-left: 2px solid transparent;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+.sidebar-link:hover {
+  background: var(--surface-2);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.sidebar-link[aria-current='page'] {
+  border-left-color: var(--series-1);
+  color: var(--text-primary);
+  font-weight: 600;
+  background: var(--surface-2);
+}
+
+.sidebar-group {
+  margin: 20px 0 5px;
+  padding: 0 24px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.menu-button { display: none; }
+
+.scrim { display: none; }
+
+/* Index cards */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(258px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  display: block;
+  padding: 15px 16px;
+  background: var(--surface-1);
+  border: var(--rule);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.12s ease, transform 0.12s ease;
+}
+
+.card:hover {
+  border-color: var(--border-strong);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 880px) {
+  .sidebar {
+    position: fixed;
+    z-index: 20;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+    transition: transform 0.18s ease;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.18);
+  }
+  .sidebar[data-open='true'] { transform: translateX(0); }
+  .menu-button { display: inline-block; }
+  .scrim[data-open='true'] {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 15;
+    background: rgba(0, 0, 0, 0.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .sidebar { transition: none; }
+}
+
+/* Wide tables and plots scroll inside their own container rather than the page. */
+.scroll-x { overflow-x: auto; }
