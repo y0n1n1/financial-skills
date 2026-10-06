@@ -99,7 +99,10 @@ export function Plot({
     <svg
       ref={svgRef}
       viewBox={`0 0 ${width} ${height}`}
-      style={{ width: '100%', height: 'auto', display: 'block', touchAction: 'none' }}
+      // touchAction is pan-y, not none: the chart tracks the pointer for hover,
+      // but a vertical scroll gesture that happens to start over it must still
+      // scroll the page. Blocking it makes the page feel stuck on touch devices.
+      style={{ width: '100%', height: 'auto', display: 'block', touchAction: 'pan-y' }}
       role="img"
       aria-labelledby={titleId}
     >

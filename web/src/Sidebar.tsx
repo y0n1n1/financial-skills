@@ -24,14 +24,14 @@ export function Sidebar({
           href="#/"
           style={{
             display: 'block',
-            padding: '0 24px 16px',
+            padding: '0 24px 12px',
             borderBottom: 'var(--rule)',
             marginBottom: 4,
             textDecoration: 'none',
             color: 'inherit',
           }}
         >
-          <strong style={{ display: 'block', fontSize: 14.5, letterSpacing: '-0.01em' }}>
+          <strong style={{ display: "block", fontSize: 14.5, letterSpacing: "-0.01em" }}>
             The Financial Gauntlet
           </strong>
           <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
@@ -65,8 +65,8 @@ export function Sidebar({
 
         <div
           style={{
-            margin: '26px 24px 0',
-            paddingTop: 14,
+            margin: '16px 24px 0',
+            paddingTop: 11,
             borderTop: 'var(--rule)',
             fontSize: 12,
             color: 'var(--text-muted)',

@@ -177,23 +177,6 @@ export default function LensReliability() {
               />
             ))}
 
-            {/* Direct labels at the right edge: identity never rests on colour alone. */}
-            {curves.map((curve) => {
-              const last = curve.points[curve.points.length - 1]!;
-              return (
-                <text
-                  key={`label-${curve.key}`}
-                  x={area.right + 6}
-                  y={y(last.ppv)}
-                  fontSize={10.5}
-                  dominantBaseline="central"
-                  fill={curve.color}
-                >
-                  {curve.name.split('/')[0]}
-                </text>
-              );
-            })}
-
             <line
               x1={x(baseRate)}
               x2={x(baseRate)}
@@ -203,20 +186,46 @@ export default function LensReliability() {
               strokeWidth={1.5}
             />
 
-            {atBaseRate.map(({ key, values }) => {
-              const color = PLOTTED.find((p) => p.key === key)!.color;
-              return (
-                <circle
-                  key={`dot-${key}`}
-                  cx={x(baseRate)}
-                  cy={y(values.ppv)}
-                  r={5}
-                  fill={color}
-                  stroke="var(--surface-1)"
-                  strokeWidth={2}
-                />
-              );
-            })}
+            {/*
+             * Direct labels sit at the base-rate marker rather than at the right
+             * edge. Every curve converges on 100% as the base rate approaches 1,
+             * so edge labels pile on top of each other; at the marker the series
+             * are separated by exactly the quantity the chart is about.
+             */}
+            {(() => {
+              const placed: number[] = [];
+              return atBaseRate.map(({ key, values }) => {
+                const color = PLOTTED.find((p) => p.key === key)!.color;
+                const cy = y(values.ppv);
+                // Nudge a label clear of any already placed within 12px.
+                let labelY = cy;
+                while (placed.some((taken) => Math.abs(taken - labelY) < 12)) labelY -= 12;
+                placed.push(labelY);
+                const flip = x(baseRate) > area.right - 118;
+                return (
+                  <g key={`dot-${key}`}>
+                    <circle
+                      cx={x(baseRate)}
+                      cy={cy}
+                      r={5}
+                      fill={color}
+                      stroke="var(--surface-1)"
+                      strokeWidth={2}
+                    />
+                    <text
+                      x={x(baseRate) + (flip ? -10 : 10)}
+                      y={labelY}
+                      fontSize={10.5}
+                      dominantBaseline="central"
+                      textAnchor={flip ? 'end' : 'start'}
+                      fill={color}
+                    >
+                      {reliability.LENSES[key]!.name.split('/')[0]} {pct(values.ppv)}
+                    </text>
+                  </g>
+                );
+              });
+            })()}
 
             {hoverBr !== null && (
               <line
