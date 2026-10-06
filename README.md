@@ -11,6 +11,7 @@
   <img alt="Skills" src="https://img.shields.io/badge/skills-3-informational">
   <img alt="Quant tools" src="https://img.shields.io/badge/quant%20tools-19-6E56CF">
   <img alt="Methodology" src="https://img.shields.io/badge/methodology-Bayesian%20%2B%20ACH-444">
+  <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green">
 </p>
 
 ---
@@ -211,3 +212,7 @@ tools/         19 CLIs  — Monte Carlo, BL optimiser, calibration, screener, li
 This is a **personal research system**, written in first person for its author and opinionated accordingly — the prompts address a specific user, assume a GBP book, and carry a deliberately informal presentation layer over a formal analytical core. Fork it and make it yours.
 
 It is **not financial advice**, and by construction it never gives any. It produces probabilities, expected values, confidence intervals, and reasons to walk away. Every output is a prompt for your own judgement, not a substitute for it. No tool here executes a trade.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
