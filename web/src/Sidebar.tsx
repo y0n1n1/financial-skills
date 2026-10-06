@@ -29,7 +29,17 @@ function useFitsViewport(ref: React.RefObject<HTMLElement>): boolean {
     // Measure the inner content, never the nav's own box. As a flex child the
     // nav stretches to the full page height once it is no longer pinned, so
     // measuring the box would read thousands of pixels and latch the state off.
-    const measure = () => setFits(element.offsetHeight <= window.innerHeight);
+    // The nav's own vertical padding counts toward what has to fit: leaving it
+    // out pins the sidebar when it is a few pixels too tall, clipping the end
+    // of the index by exactly that padding.
+    const measure = () => {
+      const nav = element.parentElement;
+      const style = nav ? getComputedStyle(nav) : null;
+      const padding = style
+        ? parseFloat(style.paddingTop) + parseFloat(style.paddingBottom)
+        : 0;
+      setFits(element.offsetHeight + padding <= window.innerHeight);
+    };
     measure();
 
     const observer = new ResizeObserver(measure);
