@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'feat/**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  python:
+    name: Python package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install
+        run: pip install -e "packages/tfg-core[dev]"
+      - name: Test
+        run: cd packages/tfg-core && pytest -q
+      # The fixtures are the cross-language contract. Regenerating them must be a
+      # no-op: if this leaves a diff, Python's behaviour changed without the
+      # vectors being updated, and the TypeScript suite is now testing the past.
+      - name: Fixtures are current
+        run: |
+          python scripts/generate_fixtures.py
+          git diff --exit-code packages/fixtures/ \
+            || (echo "::error::Fixtures are stale — run scripts/generate_fixtures.py and commit." && exit 1)
+
+  typescript:
+    name: TypeScript port
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+        working-directory: packages/core-ts
+      - run: npm run typecheck
+        working-directory: packages/core-ts
+      - run: npm test
+        working-directory: packages/core-ts
+
+  web:
+    name: Web gallery
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+        working-directory: web
+      - run: npm run build
+        working-directory: web

@@ -107,9 +107,9 @@ export function Plot({
 
       {/* Horizontal gridlines, one per y tick. */}
       {!hideYGrid &&
-        y.ticks(yTicks).map((tick) => (
+        y.ticks(yTicks).map((tick, i) => (
           <line
-            key={`yg-${tick}`}
+            key={`yg-${i}`}
             x1={m.left}
             x2={width - m.right}
             y1={y(tick)}
@@ -121,9 +121,9 @@ export function Plot({
         ))}
 
       {!hideXGrid &&
-        x.ticks(xTicks).map((tick) => (
+        x.ticks(xTicks).map((tick, i) => (
           <line
-            key={`xg-${tick}`}
+            key={`xg-${i}`}
             x1={x(tick)}
             x2={x(tick)}
             y1={m.top}
@@ -148,9 +148,9 @@ export function Plot({
         shapeRendering="crispEdges"
       />
 
-      {y.ticks(yTicks).map((tick) => (
+      {y.ticks(yTicks).map((tick, i) => (
         <text
-          key={`yt-${tick}`}
+          key={`yt-${i}`}
           x={m.left - 8}
           y={y(tick)}
           textAnchor="end"
@@ -163,9 +163,9 @@ export function Plot({
         </text>
       ))}
 
-      {x.ticks(xTicks).map((tick) => (
+      {x.ticks(xTicks).map((tick, i) => (
         <text
-          key={`xt-${tick}`}
+          key={`xt-${i}`}
           x={x(tick)}
           y={height - m.bottom + 16}
           textAnchor="middle"
