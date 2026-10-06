@@ -85,7 +85,7 @@
       },
       "expected": {
         "probability": 0.8,
-        "win_loss_ratio": Infinity,
+        "win_loss_ratio": "__Infinity__",
         "fraction": 0.0,
         "half": 0.0,
         "quarter": 0.0,

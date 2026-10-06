@@ -1,0 +1,37 @@
+{
+  "name": "@tfg/core",
+  "version": "0.1.0",
+  "description": "Pure quantitative primitives behind The Financial Gauntlet: Bayesian updating with uncertainty propagation, Monte Carlo EV, Black-Scholes implied probabilities, Black-Litterman allocation, Kelly gating, and calibration scoring. Zero runtime dependencies.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "sideEffects": false,
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "bayesian",
+    "monte-carlo",
+    "black-litterman",
+    "kelly-criterion",
+    "calibration"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/y0n1n1/financial-skills"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

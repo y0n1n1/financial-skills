@@ -35,6 +35,30 @@ EXACT_TOLERANCE = 1e-12
 STATISTICAL_TOLERANCE = 5e-3
 
 
+#: Non-finite floats have no JSON representation, so they travel as these
+#: sentinels. Python's json.dump would otherwise emit bare `Infinity`, which
+#: JSON.parse rejects — the fixtures must be readable by both languages.
+NON_FINITE_SENTINELS = {
+    float("inf"): "__Infinity__",
+    float("-inf"): "__-Infinity__",
+}
+
+
+def portable(value: Any) -> Any:
+    """Recursively replace non-finite floats with string sentinels."""
+    if isinstance(value, float):
+        if value != value:
+            return "__NaN__"
+        if value in NON_FINITE_SENTINELS:
+            return NON_FINITE_SENTINELS[value]
+        return value
+    if isinstance(value, dict):
+        return {k: portable(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [portable(v) for v in value]
+    return value
+
+
 def write(name: str, algorithm: str, cases: list[dict[str, Any]], *,
           tolerance: float = EXACT_TOLERANCE, kind: str = "exact",
           note: str = "") -> None:
@@ -44,13 +68,15 @@ def write(name: str, algorithm: str, cases: list[dict[str, Any]], *,
         "agreement": kind,
         "tolerance": tolerance,
         "generated_by": "scripts/generate_fixtures.py",
-        "cases": cases,
+        "cases": portable(cases),
     }
     if note:
         payload["note"] = note
     path = os.path.join(FIXTURE_DIR, f"{name}.json")
     with open(path, "w") as f:
-        json.dump(payload, f, indent=2)
+        # allow_nan=False turns any missed non-finite value into an error rather
+        # than invalid JSON that only fails later, in the other language.
+        json.dump(payload, f, indent=2, allow_nan=False)
         f.write("\n")
     print(f"  wrote {os.path.relpath(path, REPO_ROOT)} ({len(cases)} cases)")
 
