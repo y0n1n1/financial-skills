@@ -1,0 +1,85 @@
+{
+  "algorithm": "information.entropy / entropy_reduction",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "uniform over four",
+      "input": {
+        "fn": "entropy",
+        "probabilities": [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      },
+      "expected": 2.0
+    },
+    {
+      "name": "certain",
+      "input": {
+        "fn": "entropy",
+        "probabilities": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "expected": 0.0
+    },
+    {
+      "name": "skewed",
+      "input": {
+        "fn": "entropy",
+        "probabilities": [
+          0.7,
+          0.2,
+          0.07,
+          0.03
+        ]
+      },
+      "expected": 1.2449087393701086
+    },
+    {
+      "name": "analysis that learned something",
+      "input": {
+        "fn": "entropy_reduction",
+        "prior": [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "posterior": [
+          0.7,
+          0.2,
+          0.07,
+          0.03
+        ]
+      },
+      "expected": 0.7550912606298914
+    },
+    {
+      "name": "analysis that increased uncertainty",
+      "input": {
+        "fn": "entropy_reduction",
+        "prior": [
+          0.7,
+          0.2,
+          0.07,
+          0.03
+        ],
+        "posterior": [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      },
+      "expected": -0.7550912606298914
+    }
+  ]
+}

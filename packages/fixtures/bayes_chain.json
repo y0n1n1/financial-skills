@@ -1,0 +1,376 @@
+{
+  "algorithm": "bayes.run_chain",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "five updates, bias correction on",
+      "input": {
+        "prior_mean": 0.4,
+        "prior_std": 0.08,
+        "apply_bias_correction": true,
+        "updates": [
+          {
+            "direction": "STRONG_FOR",
+            "quality": 0.9,
+            "label": "STRONG_FOR"
+          },
+          {
+            "direction": "STRONG_AGAINST",
+            "quality": 0.85,
+            "label": "STRONG_AGAINST"
+          },
+          {
+            "direction": "MODERATE_FOR",
+            "quality": 0.7,
+            "label": "MODERATE_FOR"
+          },
+          {
+            "direction": "MODERATE_AGAINST",
+            "quality": 0.75,
+            "label": "MODERATE_AGAINST"
+          },
+          {
+            "direction": "MODERATE_AGAINST",
+            "quality": 0.7,
+            "label": "MODERATE_AGAINST"
+          }
+        ]
+      },
+      "expected": {
+        "chain": [
+          {
+            "step": 1,
+            "label": "STRONG_FOR",
+            "direction": "STRONG_FOR",
+            "lr_raw": 1.4,
+            "lr_quality_adjusted": 1.3599999999999999,
+            "lr_final": 1.216,
+            "quality": 0.9,
+            "posterior_mean": 0.4477172312223858,
+            "posterior_std": 0.08405179379293903,
+            "note": ""
+          },
+          {
+            "step": 2,
+            "label": "STRONG_AGAINST",
+            "direction": "STRONG_AGAINST",
+            "lr_raw": 0.6,
+            "lr_quality_adjusted": 0.6599999999999999,
+            "lr_final": 0.7959999999999999,
+            "quality": 0.85,
+            "posterior_mean": 0.39220466008843013,
+            "posterior_std": 0.08420744178572641,
+            "note": ""
+          },
+          {
+            "step": 3,
+            "label": "MODERATE_FOR",
+            "direction": "MODERATE_FOR",
+            "lr_raw": 1.15,
+            "lr_quality_adjusted": 1.105,
+            "lr_final": 1.063,
+            "quality": 0.7,
+            "posterior_mean": 0.40686048133648384,
+            "posterior_std": 0.08577929537481056,
+            "note": ""
+          },
+          {
+            "step": 4,
+            "label": "MODERATE_AGAINST",
+            "direction": "MODERATE_AGAINST",
+            "lr_raw": 0.85,
+            "lr_quality_adjusted": 0.8875,
+            "lr_final": 0.9325,
+            "quality": 0.75,
+            "posterior_mean": 0.3901110508151512,
+            "posterior_std": 0.08534637759813936,
+            "note": ""
+          },
+          {
+            "step": 5,
+            "label": "MODERATE_AGAINST",
+            "direction": "MODERATE_AGAINST",
+            "lr_raw": 0.85,
+            "lr_quality_adjusted": 0.895,
+            "lr_final": 0.937,
+            "quality": 0.7,
+            "posterior_mean": 0.37474413991701705,
+            "posterior_std": 0.08470384728742265,
+            "note": ""
+          }
+        ],
+        "posterior": {
+          "mean": 0.37474413991701705,
+          "std_raw": 0.08470384728742265,
+          "std_corrected": 0.127055770931134,
+          "ci_68": [
+            0.24768836898588306,
+            0.501799910848151
+          ],
+          "ci_95": [
+            0.12063259805474907,
+            0.628855681779285
+          ]
+        },
+        "crosses_50": true
+      }
+    },
+    {
+      "name": "ambiguous evidence is inert, bias correction off",
+      "input": {
+        "prior_mean": 0.35,
+        "prior_std": 0.1,
+        "apply_bias_correction": false,
+        "updates": [
+          {
+            "direction": "WEAK_FOR",
+            "quality": 0.5,
+            "label": "WEAK_FOR"
+          },
+          {
+            "direction": "AMBIGUOUS",
+            "quality": 0.5,
+            "label": "AMBIGUOUS"
+          },
+          {
+            "direction": "STRONG_AGAINST",
+            "quality": 0.9,
+            "label": "STRONG_AGAINST"
+          }
+        ]
+      },
+      "expected": {
+        "chain": [
+          {
+            "step": 1,
+            "label": "WEAK_FOR",
+            "direction": "WEAK_FOR",
+            "lr_raw": 1.05,
+            "lr_quality_adjusted": 1.025,
+            "lr_final": 1.025,
+            "quality": 0.5,
+            "posterior_mean": 0.3556381660470879,
+            "posterior_std": 0.10088446998239431,
+            "note": ""
+          },
+          {
+            "step": 2,
+            "label": "AMBIGUOUS",
+            "direction": "AMBIGUOUS",
+            "lr_raw": 1.0,
+            "lr_quality_adjusted": 1.0,
+            "lr_final": 1.0,
+            "quality": 0.5,
+            "posterior_mean": 0.3556381660470879,
+            "posterior_std": 0.10088446998239431,
+            "note": "AMBIGUOUS \u2014 no update"
+          },
+          {
+            "step": 3,
+            "label": "STRONG_AGAINST",
+            "direction": "STRONG_AGAINST",
+            "lr_raw": 0.6,
+            "lr_quality_adjusted": 0.6399999999999999,
+            "lr_final": 0.6399999999999999,
+            "quality": 0.9,
+            "posterior_mean": 0.2610277398817644,
+            "posterior_std": 0.09416281998942853,
+            "note": ""
+          }
+        ],
+        "posterior": {
+          "mean": 0.2610277398817644,
+          "std_raw": 0.09416281998942853,
+          "std_corrected": 0.09416281998942853,
+          "ci_68": [
+            0.16686491989233587,
+            0.35519055987119297
+          ],
+          "ci_95": [
+            0.07270209990290735,
+            0.4493533798606215
+          ]
+        },
+        "crosses_50": false
+      }
+    },
+    {
+      "name": "posterior clamps at the ceiling",
+      "input": {
+        "prior_mean": 0.9,
+        "prior_std": 0.05,
+        "apply_bias_correction": false,
+        "updates": [
+          {
+            "direction": "STRONG_FOR",
+            "quality": 1.0,
+            "label": "s0"
+          },
+          {
+            "direction": "STRONG_FOR",
+            "quality": 1.0,
+            "label": "s1"
+          },
+          {
+            "direction": "STRONG_FOR",
+            "quality": 1.0,
+            "label": "s2"
+          },
+          {
+            "direction": "STRONG_FOR",
+            "quality": 1.0,
+            "label": "s3"
+          },
+          {
+            "direction": "STRONG_FOR",
+            "quality": 1.0,
+            "label": "s4"
+          },
+          {
+            "direction": "STRONG_FOR",
+            "quality": 1.0,
+            "label": "s5"
+          }
+        ]
+      },
+      "expected": {
+        "chain": [
+          {
+            "step": 1,
+            "label": "s0",
+            "direction": "STRONG_FOR",
+            "lr_raw": 1.4,
+            "lr_quality_adjusted": 1.4,
+            "lr_final": 1.4,
+            "quality": 1.0,
+            "posterior_mean": 0.9264705882352942,
+            "posterior_std": 0.03854341539147991,
+            "note": ""
+          },
+          {
+            "step": 2,
+            "label": "s1",
+            "direction": "STRONG_FOR",
+            "lr_raw": 1.4,
+            "lr_quality_adjusted": 1.4,
+            "lr_final": 1.4,
+            "quality": 1.0,
+            "posterior_mean": 0.9463519313304721,
+            "posterior_std": 0.029235786698567138,
+            "note": ""
+          },
+          {
+            "step": 3,
+            "label": "s2",
+            "direction": "STRONG_FOR",
+            "lr_raw": 1.4,
+            "lr_quality_adjusted": 1.4,
+            "lr_final": 1.4,
+            "quality": 1.0,
+            "posterior_mean": 0.95,
+            "posterior_std": 0.02190754665222796,
+            "note": ""
+          },
+          {
+            "step": 4,
+            "label": "s3",
+            "direction": "STRONG_FOR",
+            "lr_raw": 1.4,
+            "lr_quality_adjusted": 1.4,
+            "lr_final": 1.4,
+            "quality": 1.0,
+            "posterior_mean": 0.95,
+            "posterior_std": 0.016533966786934407,
+            "note": ""
+          },
+          {
+            "step": 5,
+            "label": "s4",
+            "direction": "STRONG_FOR",
+            "lr_raw": 1.4,
+            "lr_quality_adjusted": 1.4,
+            "lr_final": 1.4,
+            "quality": 1.0,
+            "posterior_mean": 0.95,
+            "posterior_std": 0.012717552797838164,
+            "note": ""
+          },
+          {
+            "step": 6,
+            "label": "s5",
+            "direction": "STRONG_FOR",
+            "lr_raw": 1.4,
+            "lr_quality_adjusted": 1.4,
+            "lr_final": 1.4,
+            "quality": 1.0,
+            "posterior_mean": 0.95,
+            "posterior_std": 0.010069990898970956,
+            "note": ""
+          }
+        ],
+        "posterior": {
+          "mean": 0.95,
+          "std_raw": 0.010069990898970956,
+          "std_corrected": 0.010069990898970956,
+          "ci_68": [
+            0.939930009101029,
+            0.9600699908989709
+          ],
+          "ci_95": [
+            0.929860018202058,
+            0.9701399817979419
+          ]
+        },
+        "crosses_50": false
+      }
+    },
+    {
+      "name": "unknown direction falls back to AMBIGUOUS",
+      "input": {
+        "prior_mean": 0.5,
+        "prior_std": 0.1,
+        "apply_bias_correction": true,
+        "updates": [
+          {
+            "direction": "NOT_A_DIRECTION",
+            "quality": 0.8,
+            "label": "bogus"
+          }
+        ]
+      },
+      "expected": {
+        "chain": [
+          {
+            "step": 1,
+            "label": "bogus",
+            "direction": "NOT_A_DIRECTION",
+            "lr_raw": 1.0,
+            "lr_quality_adjusted": 1.0,
+            "lr_final": 1.0,
+            "quality": 0.8,
+            "posterior_mean": 0.5,
+            "posterior_std": 0.1,
+            "note": "AMBIGUOUS \u2014 no update"
+          }
+        ],
+        "posterior": {
+          "mean": 0.5,
+          "std_raw": 0.1,
+          "std_corrected": 0.15000000000000002,
+          "ci_68": [
+            0.35,
+            0.65
+          ],
+          "ci_95": [
+            0.19999999999999996,
+            0.8
+          ]
+        },
+        "crosses_50": true
+      }
+    }
+  ],
+  "note": "Uncertainty propagation must track the correlation between numerator and denominator; independent propagation gives a wider, wrong interval."
+}

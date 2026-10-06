@@ -23,130 +23,20 @@ import argparse
 import json
 
 
-def compute_fscore(
-    roa_current: float,
-    roa_prior: float,
-    cfo_current: float,          # operating cash flow ($B)
-    net_income_current: float,   # net income ($B)
-    ltd_ratio_current: float,    # long-term debt / total assets
-    ltd_ratio_prior: float,
-    current_ratio_current: float,
-    current_ratio_prior: float,
-    shares_current: float,       # shares outstanding (M)
-    shares_prior: float,
-    gross_margin_current: float,
-    gross_margin_prior: float,
-    asset_turnover_current: float,  # revenue / total assets
-    asset_turnover_prior: float,
-) -> dict:
-    """Compute Piotroski F-Score (0-9)."""
+import argparse
+import json
+from dataclasses import asdict
 
-    signals = []
+from _tfg_path import ensure_tfg_core_importable
 
-    # === PROFITABILITY (4 signals) ===
+ensure_tfg_core_importable()
 
-    # 1. ROA > 0
-    s1 = 1 if roa_current > 0 else 0
-    signals.append({
-        "name": "ROA positive",
-        "category": "Profitability",
-        "score": s1,
-        "detail": f"ROA = {roa_current:.2%} {'> 0' if s1 else '<= 0'}",
-    })
+from tfg_core.fundamentals import compute_fscore as _compute_fscore
 
-    # 2. CFO > 0
-    s2 = 1 if cfo_current > 0 else 0
-    signals.append({
-        "name": "CFO positive",
-        "category": "Profitability",
-        "score": s2,
-        "detail": f"CFO = ${cfo_current:.1f}B {'> 0' if s2 else '<= 0'}",
-    })
 
-    # 3. ROA improving
-    s3 = 1 if roa_current > roa_prior else 0
-    signals.append({
-        "name": "ROA improving",
-        "category": "Profitability",
-        "score": s3,
-        "detail": f"ROA {roa_current:.2%} vs prior {roa_prior:.2%}",
-    })
-
-    # 4. CFO > Net Income (earnings quality — cash > accruals)
-    s4 = 1 if cfo_current > net_income_current else 0
-    signals.append({
-        "name": "CFO > Net Income (quality)",
-        "category": "Profitability",
-        "score": s4,
-        "detail": f"CFO ${cfo_current:.1f}B vs NI ${net_income_current:.1f}B — accruals {'low' if s4 else 'high'}",
-    })
-
-    # === LEVERAGE (3 signals) ===
-
-    # 5. Debt ratio declining
-    s5 = 1 if ltd_ratio_current < ltd_ratio_prior else 0
-    signals.append({
-        "name": "Debt ratio declining",
-        "category": "Leverage",
-        "score": s5,
-        "detail": f"LTD/Assets {ltd_ratio_current:.3f} vs prior {ltd_ratio_prior:.3f}",
-    })
-
-    # 6. Current ratio improving
-    s6 = 1 if current_ratio_current > current_ratio_prior else 0
-    signals.append({
-        "name": "Current ratio improving",
-        "category": "Leverage",
-        "score": s6,
-        "detail": f"Current ratio {current_ratio_current:.2f} vs prior {current_ratio_prior:.2f}",
-    })
-
-    # 7. No share dilution
-    s7 = 1 if shares_current <= shares_prior else 0
-    signals.append({
-        "name": "No dilution",
-        "category": "Leverage",
-        "score": s7,
-        "detail": f"Shares {shares_current:.0f}M vs prior {shares_prior:.0f}M",
-    })
-
-    # === EFFICIENCY (2 signals) ===
-
-    # 8. Gross margin improving
-    s8 = 1 if gross_margin_current > gross_margin_prior else 0
-    signals.append({
-        "name": "Gross margin improving",
-        "category": "Efficiency",
-        "score": s8,
-        "detail": f"GM {gross_margin_current:.1%} vs prior {gross_margin_prior:.1%}",
-    })
-
-    # 9. Asset turnover improving
-    s9 = 1 if asset_turnover_current > asset_turnover_prior else 0
-    signals.append({
-        "name": "Asset turnover improving",
-        "category": "Efficiency",
-        "score": s9,
-        "detail": f"AT {asset_turnover_current:.2f} vs prior {asset_turnover_prior:.2f}",
-    })
-
-    total = sum(s["score"] for s in signals)
-
-    # Accruals ratio (supplementary)
-    accruals = (net_income_current - cfo_current) / max(1, net_income_current)
-
-    quality = "STRONG" if total >= 7 else "MODERATE" if total >= 4 else "WEAK"
-
-    return {
-        "total_score": total,
-        "max_score": 9,
-        "quality": quality,
-        "signals": signals,
-        "accruals_ratio": accruals,
-        "profitability_score": s1 + s2 + s3 + s4,
-        "leverage_score": s5 + s6 + s7,
-        "efficiency_score": s8 + s9,
-    }
+def compute_fscore(**kwargs) -> dict:
+    """Backwards-compatible wrapper: returns the legacy dict shape."""
+    return asdict(_compute_fscore(**kwargs))
 
 
 def print_fscore(results: dict, ticker: str):

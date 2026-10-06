@@ -1,0 +1,129 @@
+{
+  "algorithm": "sensitivity.run_sensitivity",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "NVDA-shaped matrix, ranked widest-first",
+      "input": {
+        "current_mcap": 4400.0,
+        "revenue_scenarios": [
+          365.0,
+          300.0,
+          240.0,
+          180.0
+        ],
+        "revenue_probs": [
+          0.2,
+          0.4,
+          0.25,
+          0.15
+        ],
+        "revenue_stds": [
+          40.0,
+          30.0,
+          25.0,
+          30.0
+        ],
+        "multiple_scenarios": [
+          30.0,
+          22.0,
+          15.0
+        ],
+        "multiple_probs": [
+          0.2,
+          0.5,
+          0.3
+        ],
+        "margin": 0.65
+      },
+      "expected": [
+        {
+          "parameter": "Net margin (65% \u00b1 5pp)",
+          "ev_low": -0.17909090909090908,
+          "ev_high": -0.042272727272727115,
+          "ev_swing": 0.13681818181818195,
+          "base_ev": -0.11068181818181817
+        },
+        {
+          "parameter": "Bull multiple prob (20% \u00b1 10pp)",
+          "ev_low": -0.15463068181818182,
+          "ev_high": -0.06673295454545453,
+          "ev_swing": 0.0878977272727273,
+          "base_ev": -0.11068181818181817
+        },
+        {
+          "parameter": "Bear multiple prob (30% \u00b1 10pp)",
+          "ev_low": -0.07227272727272724,
+          "ev_high": -0.1490909090909091,
+          "ev_swing": 0.07681818181818187,
+          "base_ev": -0.11068181818181817
+        },
+        {
+          "parameter": "Revenue scenario 2 ($300.0B \u00b1 $30.0B)",
+          "ev_low": -0.14879545454545454,
+          "ev_high": -0.07256818181818181,
+          "ev_swing": 0.07622727272727273,
+          "base_ev": -0.11068181818181817
+        },
+        {
+          "parameter": "Revenue $180.0B prob (15% \u00b1 10pp)",
+          "ev_low": -0.07331550802139036,
+          "ev_high": -0.14804812834224595,
+          "ev_swing": 0.07473262032085559,
+          "base_ev": -0.11068181818181817
+        },
+        {
+          "parameter": "Revenue $365.0B prob (20% \u00b1 10pp)",
+          "ev_low": -0.14442826704545456,
+          "ev_high": -0.07693536931818178,
+          "ev_swing": 0.06749289772727278,
+          "base_ev": -0.11068181818181817
+        },
+        {
+          "parameter": "Revenue scenario 1 ($365.0B \u00b1 $40.0B)",
+          "ev_low": -0.1360909090909091,
+          "ev_high": -0.08527272727272724,
+          "ev_swing": 0.05081818181818186,
+          "base_ev": -0.11068181818181817
+        },
+        {
+          "parameter": "Revenue scenario 3 ($240.0B \u00b1 $25.0B)",
+          "ev_low": -0.13053267045454545,
+          "ev_high": -0.0908309659090909,
+          "ev_swing": 0.03970170454545455,
+          "base_ev": -0.11068181818181817
+        },
+        {
+          "parameter": "Revenue $240.0B prob (25% \u00b1 10pp)",
+          "ev_low": -0.09374242424242427,
+          "ev_high": -0.1276212121212121,
+          "ev_swing": 0.03387878787878784,
+          "base_ev": -0.11068181818181817
+        },
+        {
+          "parameter": "Revenue scenario 4 ($180.0B \u00b1 $30.0B)",
+          "ev_low": -0.12497443181818181,
+          "ev_high": -0.09638920454545455,
+          "ev_swing": 0.028585227272727262,
+          "base_ev": -0.11068181818181817
+        },
+        {
+          "parameter": "Revenue $300.0B prob (40% \u00b1 10pp)",
+          "ev_low": -0.12126893939393942,
+          "ev_high": -0.10009469696969697,
+          "ev_swing": 0.021174242424242443,
+          "base_ev": -0.11068181818181817
+        },
+        {
+          "parameter": "Current multiple prob (50% \u00b1 10pp)",
+          "ev_low": -0.11481818181818182,
+          "ev_high": -0.10654545454545453,
+          "ev_swing": 0.008272727272727293,
+          "base_ev": -0.11068181818181817
+        }
+      ]
+    }
+  ]
+}

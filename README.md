@@ -12,6 +12,12 @@
   <img alt="Quant tools" src="https://img.shields.io/badge/quant%20tools-19-6E56CF">
   <img alt="Methodology" src="https://img.shields.io/badge/methodology-Bayesian%20%2B%20ACH-444">
   <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green">
+  <img alt="Tests" src="https://img.shields.io/badge/tests-287%20passing-success">
+</p>
+
+<p align="center">
+  <strong><a href="https://y0n1n1.github.io/financial-skills/">→ Open the interactive gallery</a></strong><br>
+  <sub>25 of these algorithms, recomputing live in the browser as you move the inputs</sub>
 </p>
 
 ---
@@ -200,12 +206,35 @@ python3 tools/calibration.py stats
 theory/        24 files — the gauntlet: 6 lenses + bayesian engine + safeguards + protocols
 parameters/     7 files — trigger definition, FMEA scoring, independence audit
 sizing/         8 files — Kelly gate, Black-Litterman, cluster caps (+ archived v6 methods)
-tools/         19 CLIs  — Monte Carlo, BL optimiser, calibration, screener, lifecycle…
+tools/         19 CLIs  — thin argparse wrappers over the package below
+packages/
+  tfg-core/    13 modules, pure Python — no IO, no network, no printing
+  core-ts/     the same 13, ported to TypeScript with zero runtime dependencies
+  fixtures/    shared golden vectors both test suites read
+web/           the interactive gallery
 ```
 
 `sizing/` keeps its superseded v6 sizers (`kelly.md`, `risk-parity.md`, `correlation-kelly.md`, …) on disk and clearly marked retired — because the system's own rule is that you don't get to see seven competing numbers and pick your favourite. One method, one answer, versioned changes.
 
----
+## How the two implementations stay honest
+
+The maths exists twice: once in Python, once in TypeScript so it can run in a browser with nothing to install. Two implementations is normally a drift problem, so it is handled structurally rather than by discipline.
+
+Both suites read the **same golden vectors** in `packages/fixtures`. CI regenerates them and fails if the result differs, which means Python cannot change behaviour without the vectors being updated, and TypeScript cannot drift from the vectors without its own suite going red.
+
+```
+tfg-core (Python)  ──┐
+                     ├──→  packages/fixtures/*.json  ←── CI asserts these are current
+@tfg/core (TS)     ──┘
+```
+
+**287 tests**: 161 in Python, 126 in TypeScript. Beyond the shared vectors, each side asserts what the other cannot — Python checks the properties the methodology *claims* (probabilities partition the line, bias correction only ever widens an interval, drift against a declared lean is never flagged), while TypeScript checks the machinery it had to rebuild from scratch: a normal CDF against SciPy reference values to 14 decimals, matrix inversion round-trips, NumPy's percentile conventions.
+
+The one exception is Monte Carlo. NumPy's PCG64 stream cannot be reproduced in TypeScript, so that fixture declares `"agreement": "statistical"` and the port is held to distributional agreement within tolerance, while Python asserts its own stream exactly.
+
+### Four methods that had no code
+
+`theory/` and `parameters/` specified the Kelly gate, lens-reliability PPV, Shannon information content and FMEA RPN scoring in prose, with worked examples but no implementation. They are now executable, and their tests assert those documented examples directly: PPV of 59% at a 35% base rate, IC of 2.0 and 0.42 bits for 1-of-4 and 3-of-4 consistency, f* = 0.40 at p = 0.6 and b = 2.
 
 ## Notes
 

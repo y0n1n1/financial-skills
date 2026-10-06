@@ -14,107 +14,19 @@ Output: EV distribution stats + histogram data for visualization
 """
 
 import argparse
-import numpy as np
 import json
-import sys
+from dataclasses import asdict
+
+from _tfg_path import ensure_tfg_core_importable
+
+ensure_tfg_core_importable()
+
+from tfg_core.ev import monte_carlo
 
 
-def run_monte_carlo(
-    current_mcap: float,
-    revenue_scenarios: list[float],
-    revenue_probs: list[float],
-    revenue_stds: list[float],
-    multiple_scenarios: list[float],
-    multiple_probs: list[float],
-    net_margin: float = 0.65,
-    n_simulations: int = 100_000,
-    seed: int = 42,
-) -> dict:
-    """
-    Run Monte Carlo simulation on the revenue × multiple matrix.
-
-    Each simulation:
-    1. Draw a revenue scenario (weighted by probs)
-    2. Add Gaussian noise (std from revenue_stds)
-    3. Draw a multiple scenario (weighted by probs)
-    4. Compute implied market cap = revenue × margin × multiple
-    5. Compute return vs current market cap
-    """
-    rng = np.random.default_rng(seed)
-
-    # Draw revenue scenarios
-    rev_indices = rng.choice(len(revenue_scenarios), size=n_simulations, p=revenue_probs)
-    rev_means = np.array([revenue_scenarios[i] for i in rev_indices])
-    rev_stds = np.array([revenue_stds[i] for i in rev_indices])
-    revenues = rng.normal(rev_means, rev_stds)
-    revenues = np.maximum(revenues, 50)  # floor at $50B (company doesn't disappear)
-
-    # Draw multiple scenarios
-    mult_indices = rng.choice(len(multiple_scenarios), size=n_simulations, p=multiple_probs)
-    multiples = np.array([multiple_scenarios[i] for i in mult_indices])
-
-    # Add noise to multiples too (±20% of the multiple)
-    multiple_noise = rng.normal(1.0, 0.10, n_simulations)
-    multiples = multiples * multiple_noise
-    multiples = np.maximum(multiples, 5)  # floor at 5x
-
-    # Compute implied market caps and returns
-    earnings = revenues * net_margin
-    market_caps = earnings * multiples
-    returns = (market_caps - current_mcap) / current_mcap
-
-    # Statistics
-    ev_mean = float(np.mean(returns))
-    ev_median = float(np.median(returns))
-    ev_std = float(np.std(returns))
-    percentiles = {
-        "p5": float(np.percentile(returns, 5)),
-        "p10": float(np.percentile(returns, 10)),
-        "p25": float(np.percentile(returns, 25)),
-        "p50": float(np.percentile(returns, 50)),
-        "p75": float(np.percentile(returns, 75)),
-        "p90": float(np.percentile(returns, 90)),
-        "p95": float(np.percentile(returns, 95)),
-    }
-
-    p_positive = float(np.mean(returns > 0))
-    p_negative = float(np.mean(returns < 0))
-
-    # Win/loss stats for Kelly
-    wins = returns[returns > 0]
-    losses = returns[returns < 0]
-    avg_win = float(np.mean(wins)) if len(wins) > 0 else 0
-    avg_loss = float(np.mean(np.abs(losses))) if len(losses) > 0 else 0
-    win_loss_ratio = avg_win / avg_loss if avg_loss > 0 else float('inf')
-
-    # Kelly fraction
-    if avg_loss > 0 and win_loss_ratio > 0:
-        kelly = (p_positive * win_loss_ratio - p_negative) / win_loss_ratio
-    else:
-        kelly = 0
-
-    # Histogram bins for visualization
-    hist_counts, hist_edges = np.histogram(returns, bins=50)
-    histogram = {
-        "counts": hist_counts.tolist(),
-        "edges": hist_edges.tolist(),
-    }
-
-    return {
-        "n_simulations": n_simulations,
-        "ev_mean": ev_mean,
-        "ev_median": ev_median,
-        "ev_std": ev_std,
-        "percentiles": percentiles,
-        "p_positive": p_positive,
-        "p_negative": p_negative,
-        "avg_win": avg_win,
-        "avg_loss": avg_loss,
-        "win_loss_ratio": win_loss_ratio,
-        "kelly_fraction": kelly,
-        "kelly_quarter": kelly * 0.25,
-        "histogram": histogram,
-    }
+def run_monte_carlo(**kwargs) -> dict:
+    """Backwards-compatible wrapper: returns the legacy dict shape."""
+    return asdict(monte_carlo(**kwargs))
 
 
 def print_results(results: dict, ticker: str):

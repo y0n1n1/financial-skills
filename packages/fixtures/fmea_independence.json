@@ -1,0 +1,222 @@
+{
+  "algorithm": "fmea.audit_independence",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "seven triggers across five clusters",
+      "input": {
+        "triggers": [
+          {
+            "name": "F1 revenue decel",
+            "severity": 7,
+            "occurrence": 5,
+            "detection": 4,
+            "cluster": "EARNINGS"
+          },
+          {
+            "name": "F2 margin compression",
+            "severity": 6,
+            "occurrence": 4,
+            "detection": 4,
+            "cluster": "EARNINGS"
+          },
+          {
+            "name": "F3 earnings miss",
+            "severity": 5,
+            "occurrence": 5,
+            "detection": 5,
+            "cluster": "EARNINGS"
+          },
+          {
+            "name": "T1 price breakdown",
+            "severity": 4,
+            "occurrence": 6,
+            "detection": 1,
+            "cluster": "PRICE"
+          },
+          {
+            "name": "C1 competitor parity",
+            "severity": 9,
+            "occurrence": 3,
+            "detection": 8,
+            "cluster": "COMPETITIVE"
+          },
+          {
+            "name": "M1 rate shock",
+            "severity": 6,
+            "occurrence": 3,
+            "detection": 2,
+            "cluster": "MACRO"
+          },
+          {
+            "name": "X1 hidden liability",
+            "severity": 10,
+            "occurrence": 2,
+            "detection": 10,
+            "cluster": "ACCOUNTING"
+          }
+        ]
+      },
+      "expected": {
+        "n_triggers": 7,
+        "n_clusters": 5,
+        "independence": 0.7142857142857143,
+        "grade": "B",
+        "clusters": {
+          "EARNINGS": [
+            "F1 revenue decel",
+            "F2 margin compression",
+            "F3 earnings miss"
+          ],
+          "PRICE": [
+            "T1 price breakdown"
+          ],
+          "COMPETITIVE": [
+            "C1 competitor parity"
+          ],
+          "MACRO": [
+            "M1 rate shock"
+          ],
+          "ACCOUNTING": [
+            "X1 hidden liability"
+          ]
+        },
+        "redundant_clusters": [
+          "EARNINGS"
+        ],
+        "recommendations": [
+          "Consolidate the EARNINGS cluster (3 triggers): keep F1 revenue decel (best detection at D=4), relax the rest.",
+          "C1 competitor parity has poor detectability (D=8); find a leading indicator.",
+          "X1 hidden liability has poor detectability (D=10); find a leading indicator."
+        ]
+      }
+    },
+    {
+      "name": "five triggers all on one cluster",
+      "input": {
+        "triggers": [
+          {
+            "name": "F1",
+            "severity": 5,
+            "occurrence": 5,
+            "detection": 4,
+            "cluster": "EARNINGS"
+          },
+          {
+            "name": "F2",
+            "severity": 5,
+            "occurrence": 5,
+            "detection": 4,
+            "cluster": "EARNINGS"
+          },
+          {
+            "name": "F3",
+            "severity": 5,
+            "occurrence": 5,
+            "detection": 4,
+            "cluster": "EARNINGS"
+          },
+          {
+            "name": "F4",
+            "severity": 5,
+            "occurrence": 5,
+            "detection": 4,
+            "cluster": "EARNINGS"
+          },
+          {
+            "name": "F5",
+            "severity": 5,
+            "occurrence": 5,
+            "detection": 4,
+            "cluster": "EARNINGS"
+          }
+        ]
+      },
+      "expected": {
+        "n_triggers": 5,
+        "n_clusters": 1,
+        "independence": 0.2,
+        "grade": "D",
+        "clusters": {
+          "EARNINGS": [
+            "F1",
+            "F2",
+            "F3",
+            "F4",
+            "F5"
+          ]
+        },
+        "redundant_clusters": [
+          "EARNINGS"
+        ],
+        "recommendations": [
+          "Consolidate the EARNINGS cluster (5 triggers): keep F1 (best detection at D=4), relax the rest.",
+          "Add triggers from under-represented event types \u2014 the current set is effectively a single-layer defence."
+        ]
+      }
+    },
+    {
+      "name": "one trigger per cluster",
+      "input": {
+        "triggers": [
+          {
+            "name": "T1 price breakdown",
+            "severity": 4,
+            "occurrence": 6,
+            "detection": 1,
+            "cluster": "PRICE"
+          },
+          {
+            "name": "C1 competitor parity",
+            "severity": 9,
+            "occurrence": 3,
+            "detection": 8,
+            "cluster": "COMPETITIVE"
+          },
+          {
+            "name": "M1 rate shock",
+            "severity": 6,
+            "occurrence": 3,
+            "detection": 2,
+            "cluster": "MACRO"
+          },
+          {
+            "name": "X1 hidden liability",
+            "severity": 10,
+            "occurrence": 2,
+            "detection": 10,
+            "cluster": "ACCOUNTING"
+          }
+        ]
+      },
+      "expected": {
+        "n_triggers": 4,
+        "n_clusters": 4,
+        "independence": 1.0,
+        "grade": "A",
+        "clusters": {
+          "PRICE": [
+            "T1 price breakdown"
+          ],
+          "COMPETITIVE": [
+            "C1 competitor parity"
+          ],
+          "MACRO": [
+            "M1 rate shock"
+          ],
+          "ACCOUNTING": [
+            "X1 hidden liability"
+          ]
+        },
+        "redundant_clusters": [],
+        "recommendations": [
+          "C1 competitor parity has poor detectability (D=8); find a leading indicator.",
+          "X1 hidden liability has poor detectability (D=10); find a leading indicator."
+        ]
+      }
+    }
+  ],
+  "note": "Seven triggers that all fire on one earnings miss are one defence layer, not seven. Grades follow the table in parameters/defense-independence.md, whose own worked example mislabels 57% as a B; the table says C."
+}

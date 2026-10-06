@@ -1,0 +1,137 @@
+{
+  "algorithm": "information.score",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "consistent with 1 of 4 hypotheses",
+      "input": {
+        "n_hypotheses": 4,
+        "n_consistent": 1
+      },
+      "expected": {
+        "label": "1 of 4",
+        "n_hypotheses": 4,
+        "n_consistent": 1,
+        "bits": 2.0,
+        "band": "CRITICAL",
+        "admissible": true,
+        "material": true
+      }
+    },
+    {
+      "name": "consistent with 2 of 4 hypotheses",
+      "input": {
+        "n_hypotheses": 4,
+        "n_consistent": 2
+      },
+      "expected": {
+        "label": "2 of 4",
+        "n_hypotheses": 4,
+        "n_consistent": 2,
+        "bits": 1.0,
+        "band": "HIGH",
+        "admissible": true,
+        "material": false
+      }
+    },
+    {
+      "name": "consistent with 3 of 4 hypotheses",
+      "input": {
+        "n_hypotheses": 4,
+        "n_consistent": 3
+      },
+      "expected": {
+        "label": "3 of 4",
+        "n_hypotheses": 4,
+        "n_consistent": 3,
+        "bits": 0.41503749927884376,
+        "band": "LOW",
+        "admissible": false,
+        "material": false
+      }
+    },
+    {
+      "name": "consistent with 4 of 4 hypotheses",
+      "input": {
+        "n_hypotheses": 4,
+        "n_consistent": 4
+      },
+      "expected": {
+        "label": "4 of 4",
+        "n_hypotheses": 4,
+        "n_consistent": 4,
+        "bits": 0.0,
+        "band": "ZERO",
+        "admissible": false,
+        "material": false
+      }
+    },
+    {
+      "name": "consistent with 0 of 4 hypotheses",
+      "input": {
+        "n_hypotheses": 4,
+        "n_consistent": 0
+      },
+      "expected": {
+        "label": "0 of 4",
+        "n_hypotheses": 4,
+        "n_consistent": 0,
+        "bits": 2.0,
+        "band": "CRITICAL",
+        "admissible": true,
+        "material": true
+      }
+    },
+    {
+      "name": "consistent with 1 of 8 hypotheses",
+      "input": {
+        "n_hypotheses": 8,
+        "n_consistent": 1
+      },
+      "expected": {
+        "label": "1 of 8",
+        "n_hypotheses": 8,
+        "n_consistent": 1,
+        "bits": 3.0,
+        "band": "CRITICAL",
+        "admissible": true,
+        "material": true
+      }
+    },
+    {
+      "name": "consistent with 2 of 3 hypotheses",
+      "input": {
+        "n_hypotheses": 3,
+        "n_consistent": 2
+      },
+      "expected": {
+        "label": "2 of 3",
+        "n_hypotheses": 3,
+        "n_consistent": 2,
+        "bits": 0.5849625007211562,
+        "band": "MEDIUM",
+        "admissible": true,
+        "material": false
+      }
+    },
+    {
+      "name": "consistent with 1 of 1 hypotheses",
+      "input": {
+        "n_hypotheses": 1,
+        "n_consistent": 1
+      },
+      "expected": {
+        "label": "1 of 1",
+        "n_hypotheses": 1,
+        "n_consistent": 1,
+        "bits": 0.0,
+        "band": "ZERO",
+        "admissible": false,
+        "material": false
+      }
+    }
+  ],
+  "note": "IC gates what enters the Bayesian chain; it is never compared with or combined into a likelihood ratio."
+}

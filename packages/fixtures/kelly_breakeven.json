@@ -1,0 +1,78 @@
+{
+  "algorithm": "kelly.breakeven_probability / growth_rate",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "breakeven at b=0.5",
+      "input": {
+        "fn": "breakeven_probability",
+        "win_loss_ratio": 0.5
+      },
+      "expected": 0.6666666666666666
+    },
+    {
+      "name": "breakeven at b=1.0",
+      "input": {
+        "fn": "breakeven_probability",
+        "win_loss_ratio": 1.0
+      },
+      "expected": 0.5
+    },
+    {
+      "name": "breakeven at b=2.0",
+      "input": {
+        "fn": "breakeven_probability",
+        "win_loss_ratio": 2.0
+      },
+      "expected": 0.3333333333333333
+    },
+    {
+      "name": "breakeven at b=3.0",
+      "input": {
+        "fn": "breakeven_probability",
+        "win_loss_ratio": 3.0
+      },
+      "expected": 0.25
+    },
+    {
+      "name": "breakeven at b=10.0",
+      "input": {
+        "fn": "breakeven_probability",
+        "win_loss_ratio": 10.0
+      },
+      "expected": 0.09090909090909091
+    },
+    {
+      "name": "growth rate at full kelly",
+      "input": {
+        "fn": "growth_rate",
+        "probability": 0.6,
+        "win_loss_ratio": 2.0,
+        "fraction": 0.4
+      },
+      "expected": 0.14834174943487513
+    },
+    {
+      "name": "growth rate at half kelly",
+      "input": {
+        "fn": "growth_rate",
+        "probability": 0.6,
+        "win_loss_ratio": 2.0,
+        "fraction": 0.2
+      },
+      "expected": 0.11262592144704384
+    },
+    {
+      "name": "growth rate when overbetting",
+      "input": {
+        "fn": "growth_rate",
+        "probability": 0.6,
+        "win_loss_ratio": 2.0,
+        "fraction": 0.9
+      },
+      "expected": -0.3032623868889236
+    }
+  ]
+}

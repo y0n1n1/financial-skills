@@ -1,0 +1,23 @@
+{
+  "scenarios": [
+    {
+      "label": "Below $80",
+      "range": "$0 - $80",
+      "probability": 0.1040594171139364,
+      "return": -0.6
+    },
+    {
+      "label": "$80-$120",
+      "range": "$80 - $120",
+      "probability": 0.7455832443080371,
+      "return": 0.0
+    },
+    {
+      "label": "Above $120",
+      "range": "$120+",
+      "probability": 0.15035733857802647,
+      "return": 0.56
+    }
+  ],
+  "ev": 0.021764459335332983
+}

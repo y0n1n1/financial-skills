@@ -1,0 +1,93 @@
+{
+  "algorithm": "bayes.update / dampen_lr / evidence_quality",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "update, lr above 1",
+      "input": {
+        "fn": "update",
+        "prior": 0.4,
+        "lr": 1.4
+      },
+      "expected": 0.48275862068965514
+    },
+    {
+      "name": "update, lr below 1",
+      "input": {
+        "fn": "update",
+        "prior": 0.4,
+        "lr": 0.6
+      },
+      "expected": 0.2857142857142857
+    },
+    {
+      "name": "update, lr of 1 is inert",
+      "input": {
+        "fn": "update",
+        "prior": 0.37,
+        "lr": 1.0
+      },
+      "expected": 0.37
+    },
+    {
+      "name": "update, zero prior stays zero",
+      "input": {
+        "fn": "update",
+        "prior": 0.0,
+        "lr": 5.0
+      },
+      "expected": 0.0
+    },
+    {
+      "name": "dampen, low quality",
+      "input": {
+        "fn": "dampen_lr",
+        "raw_lr": 2.0,
+        "quality": 0.4
+      },
+      "expected": 1.4
+    },
+    {
+      "name": "dampen, high quality",
+      "input": {
+        "fn": "dampen_lr",
+        "raw_lr": 2.0,
+        "quality": 0.9
+      },
+      "expected": 1.9
+    },
+    {
+      "name": "dampen, zero quality is inert",
+      "input": {
+        "fn": "dampen_lr",
+        "raw_lr": 2.0,
+        "quality": 0.0
+      },
+      "expected": 1.0
+    },
+    {
+      "name": "quality, audited primary filing",
+      "input": {
+        "fn": "evidence_quality",
+        "source_tier": 1.0,
+        "days_old": 30,
+        "sample_n": 100,
+        "is_primary": true
+      },
+      "expected": 0.9897260273972603
+    },
+    {
+      "name": "quality, stale secondary management claim",
+      "input": {
+        "fn": "evidence_quality",
+        "source_tier": 0.3,
+        "days_old": 900,
+        "sample_n": 1,
+        "is_primary": false
+      },
+      "expected": 0.2
+    }
+  ]
+}

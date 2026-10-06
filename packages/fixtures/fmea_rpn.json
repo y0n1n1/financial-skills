@@ -1,0 +1,144 @@
+{
+  "algorithm": "fmea.rank",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "seven triggers ranked by RPN",
+      "input": {
+        "triggers": [
+          {
+            "name": "F1 revenue decel",
+            "severity": 7,
+            "occurrence": 5,
+            "detection": 4,
+            "cluster": "EARNINGS"
+          },
+          {
+            "name": "F2 margin compression",
+            "severity": 6,
+            "occurrence": 4,
+            "detection": 4,
+            "cluster": "EARNINGS"
+          },
+          {
+            "name": "F3 earnings miss",
+            "severity": 5,
+            "occurrence": 5,
+            "detection": 5,
+            "cluster": "EARNINGS"
+          },
+          {
+            "name": "T1 price breakdown",
+            "severity": 4,
+            "occurrence": 6,
+            "detection": 1,
+            "cluster": "PRICE"
+          },
+          {
+            "name": "C1 competitor parity",
+            "severity": 9,
+            "occurrence": 3,
+            "detection": 8,
+            "cluster": "COMPETITIVE"
+          },
+          {
+            "name": "M1 rate shock",
+            "severity": 6,
+            "occurrence": 3,
+            "detection": 2,
+            "cluster": "MACRO"
+          },
+          {
+            "name": "X1 hidden liability",
+            "severity": 10,
+            "occurrence": 2,
+            "detection": 10,
+            "cluster": "ACCOUNTING"
+          }
+        ]
+      },
+      "expected": [
+        {
+          "name": "C1 competitor parity",
+          "severity": 9,
+          "occurrence": 3,
+          "detection": 8,
+          "cluster": "COMPETITIVE",
+          "rpn": 216,
+          "priority": "HIGH",
+          "action": "Priority monitoring. Consider reducing position size preemptively.",
+          "needs_leading_indicator": true
+        },
+        {
+          "name": "X1 hidden liability",
+          "severity": 10,
+          "occurrence": 2,
+          "detection": 10,
+          "cluster": "ACCOUNTING",
+          "rpn": 200,
+          "priority": "HIGH",
+          "action": "Priority monitoring. Consider reducing position size preemptively.",
+          "needs_leading_indicator": true
+        },
+        {
+          "name": "F1 revenue decel",
+          "severity": 7,
+          "occurrence": 5,
+          "detection": 4,
+          "cluster": "EARNINGS",
+          "rpn": 140,
+          "priority": "MODERATE",
+          "action": "Active monitoring. Include in every scan.",
+          "needs_leading_indicator": false
+        },
+        {
+          "name": "F3 earnings miss",
+          "severity": 5,
+          "occurrence": 5,
+          "detection": 5,
+          "cluster": "EARNINGS",
+          "rpn": 125,
+          "priority": "MODERATE",
+          "action": "Active monitoring. Include in every scan.",
+          "needs_leading_indicator": false
+        },
+        {
+          "name": "F2 margin compression",
+          "severity": 6,
+          "occurrence": 4,
+          "detection": 4,
+          "cluster": "EARNINGS",
+          "rpn": 96,
+          "priority": "MODERATE",
+          "action": "Active monitoring. Include in every scan.",
+          "needs_leading_indicator": false
+        },
+        {
+          "name": "M1 rate shock",
+          "severity": 6,
+          "occurrence": 3,
+          "detection": 2,
+          "cluster": "MACRO",
+          "rpn": 36,
+          "priority": "LOW",
+          "action": "Monitor passively. Check during scheduled scans.",
+          "needs_leading_indicator": false
+        },
+        {
+          "name": "T1 price breakdown",
+          "severity": 4,
+          "occurrence": 6,
+          "detection": 1,
+          "cluster": "PRICE",
+          "rpn": 24,
+          "priority": "LOW",
+          "action": "Monitor passively. Check during scheduled scans.",
+          "needs_leading_indicator": false
+        }
+      ]
+    }
+  ],
+  "note": "Detection is inverted: 1 is immediate, 10 is undetectable, so RPN rises as a risk becomes harder to see coming."
+}

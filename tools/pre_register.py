@@ -21,6 +21,12 @@ import json
 import os
 from datetime import datetime
 
+from _tfg_path import ensure_tfg_core_importable
+
+ensure_tfg_core_importable()
+
+from tfg_core.prereg import compare as score_prereg
+
 REGISTRY_FILE = os.path.join(os.path.dirname(__file__), "..", "pre_registrations.json")
 
 
@@ -82,26 +88,14 @@ def compare(ticker: str, actual_posterior: float):
         return
 
     expected = target["expected_posterior"]
-    divergence = actual_posterior - expected
-
-    # Flag motivated reasoning if actual diverged significantly from expected
-    # in a direction that confirms the analyst's initial lean
-    flag = False
-    if target["expected_direction"] in ["bullish", "slightly bullish"]:
-        if divergence > 0.10:  # actual MORE bullish than expected by >10pp
-            flag = True
-            flag_reason = f"Actual posterior ({actual_posterior:.0%}) is {divergence:+.0%} more bullish than pre-registered expectation ({expected:.0%}). Possible confirmation bias toward bull thesis."
-    elif target["expected_direction"] in ["bearish", "slightly bearish"]:
-        if divergence < -0.10:  # actual MORE bearish than expected
-            flag = True
-            flag_reason = f"Actual posterior ({actual_posterior:.0%}) is {abs(divergence):.0%} more bearish than pre-registered expectation ({expected:.0%}). Possible confirmation bias toward bear thesis."
-    else:
-        if abs(divergence) > 0.15:
-            flag = True
-            flag_reason = f"Actual posterior ({actual_posterior:.0%}) diverged {divergence:+.0%} from expectation ({expected:.0%}). Large unexplained divergence."
-
-    if not flag:
-        flag_reason = "No motivated reasoning detected. Actual within expected range."
+    scored = score_prereg(
+        expected_posterior=expected,
+        actual_posterior=actual_posterior,
+        expected_direction=target["expected_direction"],
+    )
+    divergence = scored.divergence
+    flag = scored.motivated_reasoning_flag
+    flag_reason = scored.reason
 
     target["actual_posterior"] = actual_posterior
     target["divergence"] = divergence

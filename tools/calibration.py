@@ -18,8 +18,20 @@ Usage:
 import argparse
 import json
 import os
-import numpy as np
 from datetime import datetime
+
+from _tfg_path import ensure_tfg_core_importable
+
+ensure_tfg_core_importable()
+
+from tfg_core.calibration import (
+    Forecast,
+    GOOD_BRIER,
+    MIN_RESOLVED_FOR_STATS,
+    UNINFORMED_BRIER,
+    brier_score,
+    score_calibration,
+)
 
 LOG_FILE = os.path.join(os.path.dirname(__file__), "..", "calibration_log.json")
 
@@ -78,8 +90,7 @@ def resolve_prediction(pred_id: int, outcome: int):
         print(f"\n  Prediction #{pred_id} already resolved.\n")
         return
 
-    # Brier score = (forecast - outcome)^2
-    brier = (target["probability"] - outcome) ** 2
+    brier = brier_score(target["probability"], outcome)
 
     target["outcome"] = outcome
     target["brier_score"] = brier
@@ -114,14 +125,16 @@ def show_stats():
     print(f"  Resolved: {len(resolved)}")
     print(f"  Open: {len(open_preds)}")
 
-    if len(resolved) < 3:
-        print(f"\n  Need at least 3 resolved predictions for meaningful stats.")
+    report = score_calibration([
+        Forecast(probability=p["probability"], outcome=p["outcome"]) for p in resolved
+    ])
+
+    if len(resolved) < MIN_RESOLVED_FOR_STATS:
+        print(f"\n  Need at least {MIN_RESOLVED_FOR_STATS} resolved predictions for meaningful stats.")
         print(f"  Keep logging predictions — calibration improves with data.\n")
 
-        # Still show what we have
         if resolved:
-            briers = [p["brier_score"] for p in resolved]
-            print(f"  Mean Brier: {np.mean(briers):.4f}")
+            print(f"  Mean Brier: {report.mean_brier:.4f}")
 
         if open_preds:
             print(f"\n  Open predictions:")
@@ -130,48 +143,27 @@ def show_stats():
         print()
         return
 
-    briers = [p["brier_score"] for p in resolved]
-    probs = [p["probability"] for p in resolved]
-    outcomes = [p["outcome"] for p in resolved]
+    print(f"\n  Mean Brier score: {report.mean_brier:.4f}")
+    print(f"  ({0} = perfect, {UNINFORMED_BRIER} = uninformed, lower = better)".format(0))
 
-    mean_brier = np.mean(briers)
-    correct_count = sum(outcomes)
-
-    print(f"\n  Mean Brier score: {mean_brier:.4f}")
-    print(f"  (0 = perfect, 0.25 = uninformed, lower = better)")
-
-    if mean_brier < 0.15:
+    if report.mean_brier < GOOD_BRIER:
         print(f"  \033[92mGood calibration\033[0m")
-    elif mean_brier < 0.25:
+    elif report.mean_brier < UNINFORMED_BRIER:
         print(f"  \033[93mModerate — room for improvement\033[0m")
     else:
         print(f"  \033[91mPoor — predictions are less informative than guessing 50%\033[0m")
 
-    # Calibration by bucket
-    buckets = [(0, 0.2), (0.2, 0.4), (0.4, 0.6), (0.6, 0.8), (0.8, 1.01)]
     print(f"\n  Calibration by confidence bucket:")
     print(f"  {'Bucket':<12} {'Count':>6} {'Avg Forecast':>13} {'Actual Rate':>12} {'Gap':>8}")
     print(f"  {'-'*12} {'-'*6} {'-'*13} {'-'*12} {'-'*8}")
 
-    for low, high in buckets:
-        in_bucket = [(p, o) for p, o in zip(probs, outcomes) if low <= p < high]
-        if in_bucket:
-            avg_p = np.mean([p for p, o in in_bucket])
-            actual_rate = np.mean([o for p, o in in_bucket])
-            gap = actual_rate - avg_p
-            color = '\033[92m' if abs(gap) < 0.10 else '\033[91m'
-            reset = '\033[0m'
-            print(f"  {low:.0%}-{high:.0%}       {len(in_bucket):>6} {avg_p:>12.0%} {actual_rate:>11.0%} {color}{gap:>+7.0%}{reset}")
+    for b in report.buckets:
+        color = '\033[92m' if b.calibrated else '\033[91m'
+        reset = '\033[0m'
+        print(f"  {b.low:.0%}-{b.high:.0%}       {b.count:>6} {b.avg_forecast:>12.0%} {b.actual_rate:>11.0%} {color}{b.gap:>+7.0%}{reset}")
 
-    # Overconfidence check
-    high_conf = [(p, o) for p, o in zip(probs, outcomes) if p > 0.7]
-    low_conf = [(p, o) for p, o in zip(probs, outcomes) if p < 0.3]
-
-    if high_conf:
-        high_actual = np.mean([o for _, o in high_conf])
-        high_avg_p = np.mean([p for p, _ in high_conf])
-        if high_actual < high_avg_p - 0.15:
-            print(f"\n  \033[91mOVERCONFIDENCE DETECTED: high-confidence calls ({high_avg_p:.0%} avg) are right only {high_actual:.0%} of the time\033[0m")
+    if report.overconfident:
+        print(f"\n  \033[91mOVERCONFIDENCE DETECTED: {report.overconfidence_detail[0].lower()}{report.overconfidence_detail[1:].rstrip('.')}\033[0m")
 
     if open_preds:
         print(f"\n  Open predictions:")

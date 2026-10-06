@@ -13,154 +13,63 @@ Usage:
 
 import argparse
 import json
-import numpy as np
-from uncertainties import ufloat
-from uncertainties.umath import log, exp
+from dataclasses import asdict
+
+from _tfg_path import ensure_tfg_core_importable
+
+ensure_tfg_core_importable()
+
+from tfg_core.bayes import (
+    Update,
+    dampen_lr as adjust_lr_by_quality,
+    evidence_quality as evidence_quality_score,
+    run_chain as _run_chain,
+    update as bayesian_update,
+)
+from tfg_core.constants import (
+    INSIDE_VIEW_DAMPENING,
+    LR_RANGES,
+    OVERCONFIDENCE_INFLATION,
+)
 
 
-# Ordinal LR ranges — central estimate + uncertainty
-# These are the multipliers from the bayesian engine
-LR_RANGES = {
-    "STRONG_FOR":       {"central": 1.40, "std": 0.15},
-    "MODERATE_FOR":     {"central": 1.15, "std": 0.10},
-    "WEAK_FOR":         {"central": 1.05, "std": 0.05},
-    "AMBIGUOUS":        {"central": 1.00, "std": 0.00},
-    "WEAK_AGAINST":     {"central": 0.95, "std": 0.05},
-    "MODERATE_AGAINST": {"central": 0.85, "std": 0.10},
-    "STRONG_AGAINST":   {"central": 0.60, "std": 0.15},
-}
+def run_chain(prior_mean: float, prior_std: float, updates: list[dict], **kwargs) -> dict:
+    """Backwards-compatible wrapper: returns the legacy nested dict shape.
 
-# Bias corrections (applied by default, removable with --no-bias-correction)
-OVERCONFIDENCE_INFLATION = 1.5  # inflate CIs by 1.5x
-INSIDE_VIEW_DAMPENING = 0.6    # dampen inside-view LRs by 40%
-
-
-def evidence_quality_score(source_tier: float, days_old: int, sample_n: int, is_primary: bool) -> float:
+    The AMBIGUOUS branch now reports ``lr_quality_adjusted``/``lr_final`` like
+    every other step, instead of the legacy ``lr_adjusted``. The rendered table
+    is unchanged; only ``--json`` sees the normalised key.
     """
-    Compute evidence quality on 4 dimensions.
-    source_tier: 0.3 (management claim), 0.6 (analyst estimate), 1.0 (audited filing)
-    """
-    recency = max(0, 1 - days_old / 730)  # decay over 2 years
-    sample = min(1, np.log10(max(1, sample_n)) / 2)
-    independence = 1.0 if is_primary else 0.5
-    return float(np.mean([source_tier, recency, sample, independence]))
-
-
-def adjust_lr_by_quality(raw_lr: float, quality: float) -> float:
-    """
-    Evidence quality mechanically scales LR impact.
-    LR of 2.0x from quality 0.4 source → 1.4x
-    LR of 2.0x from quality 0.9 source → 1.9x
-    """
-    return 1 + (raw_lr - 1) * quality
-
-
-def bayesian_update(prior: float, lr: float) -> float:
-    """Single Bayesian update: P(H|E) = P(H) * LR / (P(H) * LR + P(~H))"""
-    numerator = prior * lr
-    denominator = prior * lr + (1 - prior)
-    if denominator == 0:
-        return prior
-    return numerator / denominator
-
-
-def run_chain(
-    prior_mean: float,
-    prior_std: float,
-    updates: list[dict],
-    apply_bias_correction: bool = True,
-    overconfidence_factor: float = OVERCONFIDENCE_INFLATION,
-    inside_view_dampening: float = INSIDE_VIEW_DAMPENING,
-) -> dict:
-    """
-    Run the full posterior chain with CI propagation.
-
-    updates: list of {"direction": str, "quality": float, "label": str}
-    """
-    # Build uncertain prior
-    prior = ufloat(prior_mean, prior_std)
-
+    result = _run_chain(
+        prior_mean=prior_mean,
+        prior_std=prior_std,
+        updates=[
+            Update(
+                direction=u["direction"],
+                quality=u.get("quality", 0.7),
+                label=u.get("label", ""),
+            )
+            for u in updates
+        ],
+        **kwargs,
+    )
     chain = []
-    current = prior
-
-    for i, update in enumerate(updates):
-        direction = update["direction"]
-        quality = update.get("quality", 0.7)
-        label = update.get("label", f"Update {i+1}")
-
-        # Get base LR from ordinal category
-        lr_spec = LR_RANGES.get(direction, LR_RANGES["AMBIGUOUS"])
-        if lr_spec["std"] == 0:
-            # AMBIGUOUS — no update
-            chain.append({
-                "step": i + 1,
-                "label": label,
-                "direction": direction,
-                "lr_raw": 1.0,
-                "lr_adjusted": 1.0,
-                "quality": quality,
-                "posterior_mean": current.nominal_value,
-                "posterior_std": current.std_dev,
-                "note": "AMBIGUOUS — no update",
-            })
-            continue
-
-        # Build uncertain LR
-        lr_raw = ufloat(lr_spec["central"], lr_spec["std"])
-
-        # Apply quality adjustment
-        lr_quality_adjusted = 1 + (lr_raw - 1) * quality
-
-        # Apply inside-view dampening if bias correction enabled
-        if apply_bias_correction:
-            lr_final = 1 + (lr_quality_adjusted - 1) * inside_view_dampening
-        else:
-            lr_final = lr_quality_adjusted
-
-        # Bayesian update with uncertainty
-        numerator = current * lr_final
-        denominator = current * lr_final + (1 - current)
-        new_posterior = numerator / denominator
-
-        # Clamp to [0.05, 0.95]
-        mean_clamped = max(0.05, min(0.95, new_posterior.nominal_value))
-        new_posterior = ufloat(mean_clamped, new_posterior.std_dev)
-
-        current = new_posterior
-
-        chain.append({
-            "step": i + 1,
-            "label": label,
-            "direction": direction,
-            "lr_raw": lr_raw.nominal_value,
-            "lr_quality_adjusted": lr_quality_adjusted.nominal_value,
-            "lr_final": lr_final.nominal_value if hasattr(lr_final, 'nominal_value') else float(lr_final),
-            "quality": quality,
-            "posterior_mean": current.nominal_value,
-            "posterior_std": current.std_dev,
-        })
-
-    # Apply overconfidence inflation to final CI
-    final_mean = current.nominal_value
-    final_std = current.std_dev
-    if apply_bias_correction:
-        final_std *= overconfidence_factor
-
-    # Compute CI
-    ci_68 = (final_mean - final_std, final_mean + final_std)
-    ci_95 = (final_mean - 2 * final_std, final_mean + 2 * final_std)
-
+    for step in result.chain:
+        entry = asdict(step)
+        if not entry["note"]:
+            del entry["note"]
+        chain.append(entry)
     return {
-        "prior": {"mean": prior_mean, "std": prior_std},
+        "prior": {"mean": result.prior_mean, "std": result.prior_std},
         "chain": chain,
         "posterior": {
-            "mean": final_mean,
-            "std_raw": current.std_dev,
-            "std_corrected": final_std,
-            "ci_68": [max(0, ci_68[0]), min(1, ci_68[1])],
-            "ci_95": [max(0, ci_95[0]), min(1, ci_95[1])],
+            "mean": result.posterior.mean,
+            "std_raw": result.posterior.std_raw,
+            "std_corrected": result.posterior.std_corrected,
+            "ci_68": list(result.posterior.ci_68),
+            "ci_95": list(result.posterior.ci_95),
         },
-        "bias_correction_applied": apply_bias_correction,
+        "bias_correction_applied": result.bias_correction_applied,
     }
 
 

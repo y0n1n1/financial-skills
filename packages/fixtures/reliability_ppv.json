@@ -1,0 +1,309 @@
+{
+  "algorithm": "reliability.evaluate_lens",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "fundamental at base rate 0.15",
+      "input": {
+        "lens": "fundamental",
+        "base_rate": 0.15
+      },
+      "expected": {
+        "base_rate": 0.15,
+        "sensitivity": 0.75,
+        "specificity": 0.7,
+        "ppv": 0.3061224489795918,
+        "npv": 0.9407114624505929,
+        "ppv_lift": 0.1561224489795918
+      }
+    },
+    {
+      "name": "technical at base rate 0.15",
+      "input": {
+        "lens": "technical",
+        "base_rate": 0.15
+      },
+      "expected": {
+        "base_rate": 0.15,
+        "sensitivity": 0.55,
+        "specificity": 0.5,
+        "ppv": 0.16256157635467983,
+        "npv": 0.8629441624365483,
+        "ppv_lift": 0.012561576354679832
+      }
+    },
+    {
+      "name": "sentiment at base rate 0.15",
+      "input": {
+        "lens": "sentiment",
+        "base_rate": 0.15
+      },
+      "expected": {
+        "base_rate": 0.15,
+        "sensitivity": 0.6,
+        "specificity": 0.45,
+        "ppv": 0.16143497757847533,
+        "npv": 0.864406779661017,
+        "ppv_lift": 0.011434977578475336
+      }
+    },
+    {
+      "name": "contrarian_check at base rate 0.15",
+      "input": {
+        "lens": "contrarian_check",
+        "base_rate": 0.15
+      },
+      "expected": {
+        "base_rate": 0.15,
+        "sensitivity": 0.8,
+        "specificity": 0.8,
+        "ppv": 0.41379310344827597,
+        "npv": 0.9577464788732394,
+        "ppv_lift": 0.263793103448276
+      }
+    },
+    {
+      "name": "pre_mortem at base rate 0.15",
+      "input": {
+        "lens": "pre_mortem",
+        "base_rate": 0.15
+      },
+      "expected": {
+        "base_rate": 0.15,
+        "sensitivity": 0.5,
+        "specificity": 0.85,
+        "ppv": 0.37037037037037035,
+        "npv": 0.9059561128526646,
+        "ppv_lift": 0.22037037037037036
+      }
+    },
+    {
+      "name": "fundamental at base rate 0.35",
+      "input": {
+        "lens": "fundamental",
+        "base_rate": 0.35
+      },
+      "expected": {
+        "base_rate": 0.35,
+        "sensitivity": 0.75,
+        "specificity": 0.7,
+        "ppv": 0.5737704918032785,
+        "npv": 0.8387096774193548,
+        "ppv_lift": 0.22377049180327857
+      }
+    },
+    {
+      "name": "technical at base rate 0.35",
+      "input": {
+        "lens": "technical",
+        "base_rate": 0.35
+      },
+      "expected": {
+        "base_rate": 0.35,
+        "sensitivity": 0.55,
+        "specificity": 0.5,
+        "ppv": 0.37198067632850235,
+        "npv": 0.6735751295336788,
+        "ppv_lift": 0.02198067632850237
+      }
+    },
+    {
+      "name": "sentiment at base rate 0.35",
+      "input": {
+        "lens": "sentiment",
+        "base_rate": 0.35
+      },
+      "expected": {
+        "base_rate": 0.35,
+        "sensitivity": 0.6,
+        "specificity": 0.45,
+        "ppv": 0.3700440528634361,
+        "npv": 0.6763005780346821,
+        "ppv_lift": 0.020044052863436135
+      }
+    },
+    {
+      "name": "contrarian_check at base rate 0.35",
+      "input": {
+        "lens": "contrarian_check",
+        "base_rate": 0.35
+      },
+      "expected": {
+        "base_rate": 0.35,
+        "sensitivity": 0.8,
+        "specificity": 0.8,
+        "ppv": 0.6829268292682927,
+        "npv": 0.8813559322033899,
+        "ppv_lift": 0.33292682926829276
+      }
+    },
+    {
+      "name": "pre_mortem at base rate 0.35",
+      "input": {
+        "lens": "pre_mortem",
+        "base_rate": 0.35
+      },
+      "expected": {
+        "base_rate": 0.35,
+        "sensitivity": 0.5,
+        "specificity": 0.85,
+        "ppv": 0.6422018348623852,
+        "npv": 0.7594501718213058,
+        "ppv_lift": 0.29220183486238527
+      }
+    },
+    {
+      "name": "fundamental at base rate 0.5",
+      "input": {
+        "lens": "fundamental",
+        "base_rate": 0.5
+      },
+      "expected": {
+        "base_rate": 0.5,
+        "sensitivity": 0.75,
+        "specificity": 0.7,
+        "ppv": 0.7142857142857143,
+        "npv": 0.7368421052631579,
+        "ppv_lift": 0.2142857142857143
+      }
+    },
+    {
+      "name": "technical at base rate 0.5",
+      "input": {
+        "lens": "technical",
+        "base_rate": 0.5
+      },
+      "expected": {
+        "base_rate": 0.5,
+        "sensitivity": 0.55,
+        "specificity": 0.5,
+        "ppv": 0.5238095238095238,
+        "npv": 0.5263157894736842,
+        "ppv_lift": 0.023809523809523836
+      }
+    },
+    {
+      "name": "sentiment at base rate 0.5",
+      "input": {
+        "lens": "sentiment",
+        "base_rate": 0.5
+      },
+      "expected": {
+        "base_rate": 0.5,
+        "sensitivity": 0.6,
+        "specificity": 0.45,
+        "ppv": 0.5217391304347826,
+        "npv": 0.5294117647058824,
+        "ppv_lift": 0.021739130434782594
+      }
+    },
+    {
+      "name": "contrarian_check at base rate 0.5",
+      "input": {
+        "lens": "contrarian_check",
+        "base_rate": 0.5
+      },
+      "expected": {
+        "base_rate": 0.5,
+        "sensitivity": 0.8,
+        "specificity": 0.8,
+        "ppv": 0.8,
+        "npv": 0.8,
+        "ppv_lift": 0.30000000000000004
+      }
+    },
+    {
+      "name": "pre_mortem at base rate 0.5",
+      "input": {
+        "lens": "pre_mortem",
+        "base_rate": 0.5
+      },
+      "expected": {
+        "base_rate": 0.5,
+        "sensitivity": 0.5,
+        "specificity": 0.85,
+        "ppv": 0.7692307692307692,
+        "npv": 0.6296296296296295,
+        "ppv_lift": 0.26923076923076916
+      }
+    },
+    {
+      "name": "fundamental at base rate 0.8",
+      "input": {
+        "lens": "fundamental",
+        "base_rate": 0.8
+      },
+      "expected": {
+        "base_rate": 0.8,
+        "sensitivity": 0.75,
+        "specificity": 0.7,
+        "ppv": 0.9090909090909091,
+        "npv": 0.41176470588235287,
+        "ppv_lift": 0.10909090909090902
+      }
+    },
+    {
+      "name": "technical at base rate 0.8",
+      "input": {
+        "lens": "technical",
+        "base_rate": 0.8
+      },
+      "expected": {
+        "base_rate": 0.8,
+        "sensitivity": 0.55,
+        "specificity": 0.5,
+        "ppv": 0.8148148148148149,
+        "npv": 0.21739130434782605,
+        "ppv_lift": 0.014814814814814836
+      }
+    },
+    {
+      "name": "sentiment at base rate 0.8",
+      "input": {
+        "lens": "sentiment",
+        "base_rate": 0.8
+      },
+      "expected": {
+        "base_rate": 0.8,
+        "sensitivity": 0.6,
+        "specificity": 0.45,
+        "ppv": 0.8135593220338984,
+        "npv": 0.21951219512195116,
+        "ppv_lift": 0.013559322033898313
+      }
+    },
+    {
+      "name": "contrarian_check at base rate 0.8",
+      "input": {
+        "lens": "contrarian_check",
+        "base_rate": 0.8
+      },
+      "expected": {
+        "base_rate": 0.8,
+        "sensitivity": 0.8,
+        "specificity": 0.8,
+        "ppv": 0.9411764705882353,
+        "npv": 0.5,
+        "ppv_lift": 0.14117647058823524
+      }
+    },
+    {
+      "name": "pre_mortem at base rate 0.8",
+      "input": {
+        "lens": "pre_mortem",
+        "base_rate": 0.8
+      },
+      "expected": {
+        "base_rate": 0.8,
+        "sensitivity": 0.5,
+        "specificity": 0.85,
+        "ppv": 0.9302325581395349,
+        "npv": 0.29824561403508765,
+        "ppv_lift": 0.13023255813953483
+      }
+    }
+  ],
+  "note": "The doc's worked example: sensitivity 0.80, specificity 0.70 at a 35% base rate yields PPV 59%, not 80%."
+}

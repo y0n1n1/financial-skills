@@ -1,0 +1,25 @@
+
+======================================================================
+  SENSITIVITY TORNADO — NVDA
+  Base EV: -11.1%
+======================================================================
+
+  Parameter                                       EV Swing      Low     High
+  --------------------------------------------- ---------- -------- --------
+  Net margin (65% ± 5pp)                        [91m    13.7%[0m  -17.9%   -4.2%
+  Bull multiple prob (20% ± 10pp)               [91m     8.8%[0m  -15.5%   -6.7%
+  Bear multiple prob (30% ± 10pp)               [91m     7.7%[0m   -7.2%  -14.9%
+  Revenue scenario 2 ($300.0B ± $30.0B)         [91m     7.6%[0m  -14.9%   -7.3%
+  Revenue $180.0B prob (15% ± 10pp)             [91m     7.5%[0m   -7.3%  -14.8%
+  Revenue $365.0B prob (20% ± 10pp)             [91m     6.7%[0m  -14.4%   -7.7%
+  Revenue scenario 1 ($365.0B ± $40.0B)         [91m     5.1%[0m  -13.6%   -8.5%
+  Revenue scenario 3 ($240.0B ± $25.0B)         [93m     4.0%[0m  -13.1%   -9.1%
+  Revenue $240.0B prob (25% ± 10pp)             [93m     3.4%[0m   -9.4%  -12.8%
+  Revenue scenario 4 ($180.0B ± $30.0B)         [93m     2.9%[0m  -12.5%   -9.6%
+  Revenue $300.0B prob (40% ± 10pp)             [93m     2.1%[0m  -12.1%  -10.0%
+  Current multiple prob (50% ± 10pp)            [0m     0.8%[0m  -11.5%  -10.7%
+
+  TOP DRIVER: Net margin (65% ± 5pp)
+  This input alone swings EV by 13.7%
+  → Highest research priority for reducing uncertainty
+

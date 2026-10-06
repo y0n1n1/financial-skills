@@ -1,0 +1,24 @@
+
+=======================================================
+  PIOTROSKI F-SCORE — NVDA
+=======================================================
+
+  Score: [92m9/9 (STRONG)[0m
+
+  Profitability: 4/4
+  Leverage:      3/3
+  Efficiency:    2/2
+  Accruals:      -0.33 (low — good)
+
+  [92m+[0m ROA positive                   ROA = 65.00% > 0
+  [92m+[0m CFO positive                   CFO = $97.0B > 0
+  [92m+[0m ROA improving                  ROA 65.00% vs prior 55.00%
+  [92m+[0m CFO > Net Income (quality)     CFO $97.0B vs NI $73.0B — accruals low
+  [92m+[0m Debt ratio declining           LTD/Assets 0.070 vs prior 0.080
+  [92m+[0m Current ratio improving        Current ratio 3.91 vs prior 3.50
+  [92m+[0m No dilution                    Shares 24400M vs prior 24500M
+  [92m+[0m Gross margin improving         GM 75.0% vs prior 73.0%
+  [92m+[0m Asset turnover improving       AT 0.85 vs prior 0.80
+
+=======================================================
+

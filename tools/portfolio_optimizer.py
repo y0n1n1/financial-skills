@@ -11,18 +11,32 @@ Usage:
 import argparse
 import json
 import sys
+from dataclasses import asdict
+
+from _tfg_path import ensure_tfg_core_importable
+
+ensure_tfg_core_importable()
+
+from tfg_core.portfolio import black_litterman as _black_litterman
 
 try:
     import numpy as np
-    import yfinance as yf
     import pandas as pd
+    import yfinance as yf
 except ImportError:
-    print("Install: pip3 install numpy yfinance pandas")
+    print("Install: pip3 install numpy pandas yfinance")
     sys.exit(1)
+
+#: Trading days per year, for annualising a daily covariance matrix.
+TRADING_DAYS = 252
 
 
 def get_covariance_matrix(tickers: list[str], period: str = "1y") -> tuple:
-    """Get annualized covariance matrix from historical returns."""
+    """Fetch an annualised covariance matrix from historical daily closes.
+
+    This is the adapter boundary: network and pandas live here, never in
+    ``tfg_core``, so the allocation maths stays testable without market data.
+    """
     returns = {}
     for t in tickers:
         hist = yf.Ticker(t).history(period=period)
@@ -30,94 +44,33 @@ def get_covariance_matrix(tickers: list[str], period: str = "1y") -> tuple:
             returns[t] = hist["Close"].pct_change().dropna()
 
     df = pd.DataFrame(returns).dropna()
-    cov_annual = df.cov() * 252
-    return cov_annual, df
+    return df.cov() * TRADING_DAYS, df
 
 
 def black_litterman(
     tickers: list[str],
     market_caps: list[float],
-    views: list[float],      # TFG EV estimates (%)
-    confidences: list[float], # 0-100, how confident in each view
+    views: list[float],
+    confidences: list[float],
     risk_aversion: float = 2.5,
     tau: float = 0.05,
     period: str = "1y",
 ) -> dict:
-    """
-    Simplified Black-Litterman allocation.
-
-    market_caps: used to derive equilibrium weights
-    views: TFG expected returns (from Monte Carlo EV)
-    confidences: TFG conviction mapped to view certainty
-    """
-    n = len(tickers)
-    cov, returns_df = get_covariance_matrix(tickers, period)
-
+    """Fetch covariance, then delegate to ``tfg_core.portfolio.black_litterman``."""
+    cov, _returns = get_covariance_matrix(tickers, period)
     if cov.empty:
         return {"error": "insufficient price data"}
 
-    sigma = cov.values
-
-    # Market cap weights (equilibrium)
-    total_cap = sum(market_caps)
-    w_mkt = np.array([mc / total_cap for mc in market_caps])
-
-    # Implied equilibrium returns
-    pi = risk_aversion * sigma @ w_mkt
-
-    # Views matrix (P) — identity for absolute views on each stock
-    P = np.eye(n)
-
-    # View returns (Q)
-    Q = np.array([v / 100 for v in views])
-
-    # Omega — uncertainty in views (diagonal, from confidences)
-    # Higher confidence = lower uncertainty = tighter omega
-    omega_diag = []
-    for i, conf in enumerate(confidences):
-        # Map confidence 0-100 to omega
-        # conf 100% → omega ≈ 0 (fully trust view)
-        # conf 0% → omega = tau * sigma[i][i] (fully trust market)
-        uncertainty = 1.0 - (conf / 100.0)
-        omega_diag.append(max(0.0001, uncertainty * tau * sigma[i][i]))
-    omega = np.diag(omega_diag)
-
-    # BL posterior expected returns
-    # E[R] = [(tau*sigma)^-1 + P'*omega^-1*P]^-1 * [(tau*sigma)^-1*pi + P'*omega^-1*Q]
-    tau_sigma_inv = np.linalg.inv(tau * sigma)
-    omega_inv = np.linalg.inv(omega)
-
-    M = np.linalg.inv(tau_sigma_inv + P.T @ omega_inv @ P)
-    bl_returns = M @ (tau_sigma_inv @ pi + P.T @ omega_inv @ Q)
-
-    # Optimal weights
-    w_bl = np.linalg.inv(risk_aversion * sigma) @ bl_returns
-
-    # Normalize (long-only, no leverage)
-    w_bl = np.maximum(w_bl, 0)  # no shorts
-    w_sum = w_bl.sum()
-    if w_sum > 0:
-        w_bl = w_bl / w_sum
-    else:
-        w_bl = w_mkt  # fallback to market weights
-
-    # Risk contribution
-    port_vol = np.sqrt(w_bl @ sigma @ w_bl) * 100
-    marginal_risk = sigma @ w_bl
-    risk_contrib = w_bl * marginal_risk
-    risk_contrib_pct = risk_contrib / risk_contrib.sum() * 100 if risk_contrib.sum() > 0 else np.zeros(n)
-
-    return {
-        "tickers": tickers,
-        "market_weights": {t: round(float(w), 4) for t, w in zip(tickers, w_mkt)},
-        "equilibrium_returns": {t: round(float(r) * 100, 2) for t, r in zip(tickers, pi)},
-        "bl_returns": {t: round(float(r) * 100, 2) for t, r in zip(tickers, bl_returns)},
-        "bl_weights": {t: round(float(w), 4) for t, w in zip(tickers, w_bl)},
-        "risk_contribution": {t: round(float(rc), 1) for t, rc in zip(tickers, risk_contrib_pct)},
-        "portfolio_vol": round(float(port_vol), 1),
-        "views_used": {t: v for t, v in zip(tickers, views)},
-        "confidences_used": {t: c for t, c in zip(tickers, confidences)},
-    }
+    result = _black_litterman(
+        tickers=tickers,
+        market_caps=market_caps,
+        views=views,
+        confidences=confidences,
+        sigma=cov.values,
+        risk_aversion=risk_aversion,
+        tau=tau,
+    )
+    return asdict(result)
 
 
 def print_results(results: dict):

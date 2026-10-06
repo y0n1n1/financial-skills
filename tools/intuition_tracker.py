@@ -18,6 +18,12 @@ import os
 import math
 from datetime import datetime
 
+from _tfg_path import ensure_tfg_core_importable
+
+ensure_tfg_core_importable()
+
+from tfg_core.intuition import Divergence, categorize, resolve as score_override
+
 LOG_FILE = os.path.join(os.path.dirname(__file__), "..", "data-library",
                          "calibration", "intuition-divergences.json")
 
@@ -52,7 +58,7 @@ def log_divergence(ticker: str, param: str, model_rec: float,
         "divergence": round(divergence, 2),
         "certainty": certainty,
         "reasoning": reasoning,
-        "category": categorize(param),
+        "category": categorize(param).value,
         "actual": None,
         "model_error": None,
         "gabriel_error": None,
@@ -72,23 +78,6 @@ def log_divergence(ticker: str, param: str, model_rec: float,
     print(f"  Reasoning: {reasoning[:80]}\n")
 
 
-def categorize(param: str) -> str:
-    """Categorize the parameter for aggregated tracking."""
-    p = param.lower()
-    if "margin" in p or "revenue" in p or "earnings" in p:
-        return "financial_forecast"
-    elif "silicon" in p or "share" in p or "moat" in p or "cuda" in p:
-        return "competitive_dynamics"
-    elif "capex" in p or "regime" in p or "vix" in p or "fed" in p:
-        return "macro_cycle"
-    elif "doj" in p or "antitrust" in p or "regulation" in p:
-        return "human_decision"
-    elif "gemini" in p or "engagement" in p or "adoption" in p:
-        return "product_adoption"
-    else:
-        return "other"
-
-
 def resolve(entry_id: int, actual: float):
     """Resolve a logged divergence with the actual outcome."""
     entries = load_log()
@@ -103,9 +92,18 @@ def resolve(entry_id: int, actual: float):
         print(f"  Entry #{entry_id} not found.")
         return
 
-    model_error = abs(target["model_recommendation"] - actual)
-    gabriel_error = abs(target["gabriel_answer"] - actual)
-    gabriel_was_better = gabriel_error < model_error
+    scored = score_override(
+        Divergence(
+            parameter=target["parameter"],
+            model_recommendation=target["model_recommendation"],
+            human_answer=target["gabriel_answer"],
+            certainty=target["certainty"],
+        ),
+        actual,
+    )
+    model_error = scored.model_error
+    gabriel_error = scored.human_error
+    gabriel_was_better = scored.human_was_better
 
     target["actual"] = actual
     target["model_error"] = round(model_error, 2)

@@ -1,0 +1,103 @@
+{
+  "algorithm": "intuition.categorize / resolve",
+  "agreement": "exact",
+  "tolerance": 1e-12,
+  "generated_by": "scripts/generate_fixtures.py",
+  "cases": [
+    {
+      "name": "margin resolved at 73.0",
+      "input": {
+        "parameter": "margin",
+        "model_recommendation": 70.0,
+        "human_answer": 74.0,
+        "certainty": 70.0,
+        "actual": 73.0
+      },
+      "expected": {
+        "category": "financial_forecast",
+        "divergence": 4.0,
+        "actual": 73.0,
+        "model_error": 3.0,
+        "human_error": 1.0,
+        "human_was_better": true,
+        "error_reduction": 2.0
+      }
+    },
+    {
+      "name": "capex_language resolved at 38.0",
+      "input": {
+        "parameter": "capex_language",
+        "model_recommendation": 40.0,
+        "human_answer": 28.0,
+        "certainty": 60.0,
+        "actual": 38.0
+      },
+      "expected": {
+        "category": "macro_cycle",
+        "divergence": -12.0,
+        "actual": 38.0,
+        "model_error": 2.0,
+        "human_error": 10.0,
+        "human_was_better": false,
+        "error_reduction": -8.0
+      }
+    },
+    {
+      "name": "gemini adoption resolved at 61.0",
+      "input": {
+        "parameter": "gemini adoption",
+        "model_recommendation": 55.0,
+        "human_answer": 62.0,
+        "certainty": 80.0,
+        "actual": 61.0
+      },
+      "expected": {
+        "category": "product_adoption",
+        "divergence": 7.0,
+        "actual": 61.0,
+        "model_error": 6.0,
+        "human_error": 1.0,
+        "human_was_better": true,
+        "error_reduction": 5.0
+      }
+    },
+    {
+      "name": "doj antitrust risk resolved at 30.0",
+      "input": {
+        "parameter": "doj antitrust risk",
+        "model_recommendation": 30.0,
+        "human_answer": 45.0,
+        "certainty": 50.0,
+        "actual": 30.0
+      },
+      "expected": {
+        "category": "human_decision",
+        "divergence": 15.0,
+        "actual": 30.0,
+        "model_error": 0.0,
+        "human_error": 15.0,
+        "human_was_better": false,
+        "error_reduction": -15.0
+      }
+    },
+    {
+      "name": "something unmapped resolved at 11.0",
+      "input": {
+        "parameter": "something unmapped",
+        "model_recommendation": 10.0,
+        "human_answer": 12.0,
+        "certainty": 40.0,
+        "actual": 11.0
+      },
+      "expected": {
+        "category": "other",
+        "divergence": 2.0,
+        "actual": 11.0,
+        "model_error": 1.0,
+        "human_error": 1.0,
+        "human_was_better": false,
+        "error_reduction": 0.0
+      }
+    }
+  ]
+}
